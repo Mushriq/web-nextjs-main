@@ -14,7 +14,7 @@ const AboutSectionOne = () => {
       <div className="container">
         <div className="border-b border-body-color/[.15] pb-4 dark:border-white/[.15] md:pb-8 lg:pb-12">
           <div className="-mx-4 flex flex-wrap items-center">
-            <div className="w-full px-4 lg:w-2/3">
+            <div style={{animation: "fade-in-top 0.5s ease-in-out both"}}  className="w-full px-4 lg:w-1/2">
               <SectionTitle
                 title="Pipettes, Robots, Keyboards"
                 paragraph="We believe that addressing the next challenges in human health requires tackling biological complexity head-on, which is why we are building a team where each member combines expertise in benchwork, lab automation, and bioinformatics to seamlessly integrate data-driven insights into experimental design."
@@ -22,16 +22,22 @@ const AboutSectionOne = () => {
               />
             </div>
 
-            <div className="w-full px-4 lg:w-1/3">
+            <div className="w-full px-4 lg:w-1/2">
               <div
-                className="wow fadeInUp relative mx-auto hidden md:block aspect-[25/24] max-w-[300px] lg:mr-0"
+                className="wow fadeInUp relative mx-auto hidden md:block aspect-[25/24] max-w-[500px] lg:mr-0"
                 data-wow-delay=".2s"
               >
                 <Image
-                  src="/images/bits/pipettesrobotskeyboards-2.svg"
+                  src="/images/about/pipettes-robots-keyboards-light.svg"
                   alt="about-image"
                   fill
-                  className="drop-shadow-three dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
+                  className="block dark:hidden drop-shadow-three dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
+                />
+                                <Image
+                  src="/images/about/pipettes-robots-keyboards-dark.svg"
+                  alt="about-image"
+                  fill
+                  className="hidden dark:block drop-shadow-three dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />
               </div>
             </div>

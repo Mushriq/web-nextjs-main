@@ -12,18 +12,18 @@ const linkedinIcon = (<svg width="32" height="32" viewBox="0 0 24 24" fill="none
 const TeamSectionOne = () => {
   return (
     <section className="mt-8 mb-20 md:mt-12 lg:mt-16">
-      <SectionTitle
-            title="Our Team"
-            paragraph=" "
-            center
-          />
+        <SectionTitle
+              title="Our Team"
+              paragraph=" "
+              center
+            />
 
       <div className="container mt-10">
-        <div className="flex flex-col md:flex-row items-center justify-center">
+        <div className="flex flex-col fade-in-fwd md:flex-row items-center justify-center">
           {teamData.map((member, index) => (
 
             <div key={index} className="flex flex-col items-center px-5 mb-5">
-              <div className="relative h-48 w-48 overflow-hidden rounded-full border border-gray-200 shadow-md md:h-40 md:w-40 lg:h-64 lg:w-64">
+              <div style={{animation: "fade-in-fwd 0.5s ease-in-out both"}}  className="relative h-48 w-48 overflow-hidden rounded-full border border-gray-200 shadow-md md:h-40 md:w-40 lg:h-64 lg:w-64">
               <Image
               src={member.photo}
               alt={member.name}

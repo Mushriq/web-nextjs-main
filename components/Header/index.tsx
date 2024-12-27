@@ -127,7 +127,7 @@ const Header = () => {
                             }
 
                             ${menuItem.id === 99 /* Data Portal */
-                              ? "block items-center mt-2 ease-in-up shadow-btn hover:shadow-btn-hover block rounded-sm bg-primary px-8 py-2 text-base justify-center font-medium text-white transition duration-300 hover:bg-opacity-90 md:hidden lg:hidden xl:hidden"
+                              ? "block items-center mt-2 shadow-btn hover:shadow-btn-hover block rounded-sm bg-primary px-8 py-2 text-base justify-center font-medium text-white transition duration-300 hover:bg-opacity-90 md:hidden lg:hidden xl:hidden"
                               : ""
                             }
                             

@@ -14,9 +14,13 @@ export const metadata: Metadata = {
 const TeamPage = () => {
   return (
     <>
-      <div style={{ marginBottom: "20px" }}></div>
-      <AboutSectionOne />
+      <div className="mt-10">
+         <AboutSectionOne  />
+      </div>
+
       <TeamSectionOne />
+
+
     </>
   );
 };
