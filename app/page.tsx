@@ -12,8 +12,8 @@ import Video from "@/components/Video";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Free Next.js Template for Startup and SaaS",
-  description: "This is Home for Startup Nextjs Template",
+  title: "High Throughput Sciences",
+  description: "High Throughput Sciences (HTS) offers automation and screening capabilities to MIT researchers and external collaborators to generate next-generation datasets for machine learning-driven discoveries.",
   // other metadata
 };
 
