@@ -22,8 +22,6 @@ const PortalPage = () => {
       <div style={{ marginBottom: "20px" }}></div>  
       <Data1 />
       <div className="container mt-5 mb-20">
-        <Link href="platform">hellooooo</Link>
-
         <DynamicPlot />
       </div>
 

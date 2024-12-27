@@ -30,11 +30,11 @@ export default class DynamicPlot extends React.Component {
     
     this.setState({ plot_loading:"Loading ..."});
 
-    axios.get("http://localhost:8000/plot",      // `https://api.iconify.design/fluent-emoji-flat/alarm-clock.svg`,
+    axios.get("https://api.iconify.design/fluent-emoji-flat/alarm-clock.svg", // "http://localhost:8000/plot",      // `https://api.iconify.design/fluent-emoji-flat/alarm-clock.svg`,
       {
         params: {
-          width: this.state.plot_width,
-          height: this.state.plot_height
+          width: this.state.plot_width*10,
+          height: this.state.plot_height*10
         }
       }
     )
