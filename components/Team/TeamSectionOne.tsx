@@ -20,9 +20,9 @@ const TeamSectionOne = () => {
 
       <div className="container mt-10">
         <div className="flex flex-col md:flex-row items-center justify-center">
-          {teamData.map((member) => (
+          {teamData.map((member, index) => (
 
-            <div className="flex flex-col items-center px-5 mb-5">
+            <div key={index} className="flex flex-col items-center px-5 mb-5">
               <div className="relative h-48 w-48 overflow-hidden rounded-full border border-gray-200 shadow-md md:h-40 md:w-40 lg:h-64 lg:w-64">
               <Image
               src={member.photo}
