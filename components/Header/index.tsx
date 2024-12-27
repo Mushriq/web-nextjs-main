@@ -112,12 +112,13 @@ const Header = () => {
                       : "invisible top-[120%] opacity-0"
                   }`}
                 >
-                  <ul onClick={closeNavbar} className="block lg:flex lg:space-x-8">
+                  <ul className="block lg:flex lg:space-x-8">
                     {menuData.map((menuItem, index) => (
                       <li key={index} className="group relative">
                         {menuItem.path ? (
 
                           <Link
+                            onClick={closeNavbar}  
                             href={menuItem.path}
                             className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
                               usePathName === menuItem.path

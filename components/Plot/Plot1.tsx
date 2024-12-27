@@ -60,8 +60,7 @@ const Data1 = () => {
                 className="wow fadeInUp mb-12 lg:mb-0"
                 data-wow-delay=".15s"
               >
-               <div className="mx-[-12px] flex flex-wrap">
-                  <div className="w-full px-3">
+               <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 mx-[-12px]">
                     <DataList icon={checkIcon} 
                     title="Drug synergy collection"
                     version="1.0.0"
@@ -77,7 +76,6 @@ const Data1 = () => {
                     version="1.0.0"
                     release="01-01-2025"
                     />
-                  </div>
                 </div>
               </div>
             </div>

@@ -10,9 +10,9 @@ const checkIcon = (
 const AboutSectionOne = () => {
 
   return (
-    <section id="about" className="pt-16 md:pt-20 lg:pt-28">
+    <section id="about" className="pt-16 md:pt-20 lg:pt-24">
       <div className="container">
-        <div className="border-b border-body-color/[.15] pb-4 dark:border-white/[.15] md:pb-8 lg:pb-12">
+        <div className="border-b border-body-color/[.15] pb-4 dark:border-white/[.15] md:pb-6 lg:pb-8">
           <div className="-mx-4 flex flex-wrap items-center">
             <div className="w-full section-animation px-4 lg:w-1/2">
               <SectionTitle
@@ -24,8 +24,8 @@ const AboutSectionOne = () => {
 
             <div className="w-full px-4 lg:w-1/2">
               <div
-                className="wow fadeInUp relative figure-animation-right mx-auto hidden md:block aspect-[25/24] max-w-[500px] lg:mr-0"
-                data-wow-delay=".2s"
+                className="relative figure-animation-right mx-auto aspect-[1/1] max-w-[500px] lg:mr-0"
+                
               >
                 <Image
                   src="/images/about/pipettes-robots-keyboards-light.svg"
