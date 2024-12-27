@@ -158,15 +158,15 @@ const SignupPage = () => {
                       </div>
                       <span>
                         By creating account means you agree to the
-                        <a href="#0" className="text-primary hover:underline">
+                        <Link href="#0" className="text-primary hover:underline">
                           {" "}
                           Terms and Conditions{" "}
-                        </a>
+                        </Link>
                         , and our
-                        <a href="#0" className="text-primary hover:underline">
+                        <Link href="#0" className="text-primary hover:underline">
                           {" "}
                           Privacy Policy{" "}
-                        </a>
+                        </Link>
                       </span>
                     </label>
                   </div>
