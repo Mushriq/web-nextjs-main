@@ -17,7 +17,7 @@ const AboutSectionOne = () => {
             <div className="w-full px-4 lg:w-2/3">
               <SectionTitle
                 title="Pipettes, Robots, Keyboards"
-                paragraph="We believe that addressing the next challenges in cancer research requires tackling biological complexity head-on, which is why we need a team where each member combines expertise in benchwork, lab automation, and bioinformatics to seamlessly integrate data-driven insights into experimental design."
+                paragraph="We believe that addressing the next challenges in human health requires tackling biological complexity head-on, which is why we are building a team where each member combines expertise in benchwork, lab automation, and bioinformatics to seamlessly integrate data-driven insights into experimental design."
                 mb="0px"
               />
             </div>
