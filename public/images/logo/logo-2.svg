@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 120 27">
+  <!-- Generator: Adobe Illustrator 29.1.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 142)  -->
+  <defs>
+    <style>
+      .st0 {
+       <!-- fill: #c65ba2; -->
+        fill: #6721b4;
+        opacity: .9;
+      }
+
+      .st1 {
+        fill: #231f20;
+        font-family: DINCondensed-Bold, 'DIN Condensed';
+        font-size: 12px;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+  <text class="st1" transform="translate(26.3 11.1)"><tspan x="0" y="0">High Throughput</tspan><tspan x="0" y="12">Sciences</tspan></text>
+  <rect class="st0" x="1.8" y="2.6" width="7" height="7"/>
+  <rect class="st0" x="8.8" y="9.6" width="7" height="7"/>
+  <rect class="st0" x="15.8" y="16.6" width="7" height="7"/>
+</svg>
