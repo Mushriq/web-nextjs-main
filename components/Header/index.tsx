@@ -14,6 +14,10 @@ const Header = () => {
     setNavbarOpen(!navbarOpen);
   };
 
+  const closeNavbar = () => {
+    setNavbarOpen(false);
+  };
+
   // Sticky Navbar
   const [sticky, setSticky] = useState(false);
   const handleStickyNavbar = () => {
@@ -53,7 +57,7 @@ const Header = () => {
       >
         <div className="container">
           <div className="relative -mx-4 flex items-center justify-between">
-            <div className="w-96 max-w-full px-4 xl:mr-2.5">
+            <div onClick={closeNavbar} className="w-96 max-w-full px-4 xl:mr-2.5">
               <Link
                 href="/"
                 className={`header-logo block w-full ${
@@ -108,7 +112,7 @@ const Header = () => {
                       : "invisible top-[120%] opacity-0"
                   }`}
                 >
-                  <ul className="block lg:flex lg:space-x-8">
+                  <ul onClick={closeNavbar} className="block lg:flex lg:space-x-8">
                     {menuData.map((menuItem, index) => (
                       <li key={index} className="group relative">
                         {menuItem.path ? (
@@ -189,7 +193,7 @@ const Header = () => {
               <div className="flex items-center justify-end pr-16 lg:pr-0">
                 <Link
                   href="https://github.com/Mushriq"
-                  className="hidden px-7 py-3 text-base font-medium text-dark hover:opacity-70 dark:text-white md:flex items-center"
+                  className="hidden px-7 py-3 text-dark hover:text-primary dark:text-white/70 dark:hover:text-white md:flex items-center"
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-2">
                   <path 
