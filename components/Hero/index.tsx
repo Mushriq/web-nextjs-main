@@ -27,7 +27,7 @@ const Hero = () => {
                     href="https://nextjstemplates.com/templates/saas-starter-startup"
                     className="rounded-sm shadow-btn bg-primary px-8 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:bg-primary/80"
                     >
-                    Let's Collaborate
+                    Let&apos;s Collaborate
                   </Link>
                   <Link
                     href="/platform"
