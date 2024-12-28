@@ -44,9 +44,9 @@ const menuData: Menu[] = [
       {
         id: 31,
         icon: squareIcon,
-        title: "High-Content Imaging",
-        path: "/hcs",
-        paragraph: "hello, welcome, thanks for your help.",
+        title: "Rapid ex vivo high-content screens",
+        path: "/research/biosensor",
+        paragraph: "A label-free imaging platform with AI for rapid primary cancer screening",
         newTab: false,
       },
       {

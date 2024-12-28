@@ -2,15 +2,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Radio, Button } from "@material-tailwind/react";
+import { useRef } from "react";
+
+
+export default class BiosensorPlot extends React.Component {
+
  
-
-export default class DynamicPlot extends React.Component {
-
   state = {
     plot_loading: "Loading ...",
     plot_height: 4,
     plot_width: 4,
-    plot_data: []
+    plot_data: [],
   }
     
   
@@ -63,11 +65,12 @@ export default class DynamicPlot extends React.Component {
     return (
       <>
         <div>Choose Width:</div>
-        <div className="flex gap-10">
-          <Radio name="type" label="set to 4" value="4" onChange={this.handleChange} defaultChecked />
-          <Radio name="type" label="set to 8" value="8" onChange={this.handleChange} />
+        <div className="flex flex-wrap gap-10">
+          <Radio name="type" label="Sample 1 (2403)" value="000012112403" onChange={this.handleChange} defaultChecked />
+          <Radio name="type" label="Sample 2 (2603)" value="000012112603" onChange={this.handleChange} />
           <Button name="draw" onClick={this.redrawPlot}>ReDraw Plot</Button>
-
+        <div>
+      </div>
         </div>
         
         <div>{this.state.plot_loading}</div>

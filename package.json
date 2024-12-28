@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.2.0",
     "@material-tailwind/react": "^2.1.10",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
@@ -24,6 +26,7 @@
     "react-dom": "^18.2.0",
     "react-modal-video": "^2.0.0",
     "react-plotly.js": "^2.6.0",
+    "react-to-print": "^3.0.4",
     "webpack": "^5.97.1"
   },
   "devDependencies": {
