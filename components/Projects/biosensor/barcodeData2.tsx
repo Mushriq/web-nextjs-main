@@ -578,7 +578,7 @@ const AxiosGetRequest = () => {
     <div className="grid grid-cols-12 gap-6">
 
            {/* Plot 1 */}
-           <div  className={`flex flex-col max-h-[300px] col-span-full col-span-4 bg-white shadow-md rounded-xl ${plot1 === null
+           <div  className={`flex flex-col max-h-[300px] col-span-4 bg-white shadow-md rounded-xl ${plot1 === null
                                       ? "hidden"
                                       : "block"
                                   }
