@@ -18,13 +18,6 @@ const ResearchBiosensorPage = () => {
       <section id="about" className="pt-4">
       <div className="container">
         <div className="border-b border-body-color/[.15] pb-4 dark:border-white/[.15]">
-          <div className="py-4">
-            <h3 className="text-xl font-bold text-black dark:text-white">Principal Investigators</h3>
-            <p>Jesse Boehm (MIT)</p>
-            <p>Samuel Klempner (MGH)</p>
-            <p>Haeseong Park (DFCI)</p>
-            <p>Beth Cimini (Broad)</p>
-          </div>
           <div className="flex flex-wraped items-center">
                           <Link
                             href="/portal/biosensor"

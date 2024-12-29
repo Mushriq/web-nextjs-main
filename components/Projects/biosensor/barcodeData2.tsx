@@ -2,6 +2,9 @@
 import React , { useEffect, useState, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 
+import AboutBiosensorTeam from './AboutTeam';
+
+
 import axios from 'axios';
 import { Select, Option } from "@material-tailwind/react";
 import Image from 'next/image'
@@ -55,8 +58,28 @@ const AxiosGetRequest = () => {
   const [plot5, setPlot5] = useState(null);
   const [plot6, setPlot6] = useState(null);
 
+
+  const plot1_title = "Cell Seeding Histogram";
+  const plot1_subtitle = "Distribution at start of experiment. Wells with cells fewer than 3 standard deviations away from the mean are excluded.";
+  const plot2_title = "Plate Cell Count Heatmap";
+  const plot2_subtitle = "Each panel is a timepoint. X marks any excluded wells. Plate edges are excluded automatically.";
+  const plot3_title = "Fluorescence-based Count of Cell Types over Time";
+  const plot3_subtitle = "Each panel is a compound. Solid bars indicate viable cell counts. Shaded bars are non-viable cells.";
+  const plot4_title = "Inference Correlation";
+  const plot4_subtitle = "Correlation between label-free prediction and fluorescence-based annotation per well, per timepoint.";
+  const plot5_title = "Log-fold Change over Time";
+  const plot5_subtitle = "Each panel is a compound. Values are number of label-free inferred viable cancer cells relative to start of experiment.";
+  const plot6_title = "Collapsed Log-fold Change";
+  const plot6_subtitle = "Summary of all drug killing curves using label-free inference. Labels indicate active compounds (log-fold killing activity over 2).";
+
+  const table1_title = "Compound Activity";
+  const table1_subtitle = "Log2-fold change in the number of viable cancer cells from start of the experiment.";
+  const table1_subsubtitle = "Showing the final timepoint. Numbers in parentheses are number of detected or inferred viable cancer cells. LogFC calculation adds a pseudocount of 1 cell. Active compounds are those with label-free inferred log-fold killing activity of over 2.";
+  
   const TABLE_HEAD = ["Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled", "Status"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
+
+  const static_url = "http://0.0.0.0:8000" // "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -76,7 +99,7 @@ const AxiosGetRequest = () => {
   }, []);
 
   const handlePrint = useReactToPrint({
-    documentTitle: "SuperFileName",
+    documentTitle: `Biosensor Report - ${selectedSample?.imaging_barcode}`,
     onBeforePrint: handleBeforePrint,
     onAfterPrint: handleAfterPrint,
     onPrintError: handleAfterPrint
@@ -86,7 +109,7 @@ const AxiosGetRequest = () => {
 
   useEffect( () => {
 
-    const url =  "https://hts-biosensor-plumber-353269782212.us-central1.run.app/list" // "https://jsonplaceholder.typicode.com/users" //
+    const url =  `${static_url}/list`;// "https://jsonplaceholder.typicode.com/users" //
 
     axios.get(url)
       .then(response => {
@@ -109,8 +132,8 @@ const AxiosGetRequest = () => {
 
     // Get new logfc table data
     setTABLE_ROWS(null);
-    const logfc_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/logfctable"
-    axios.get(logfc_url, { params: { id: selected.imaging_barcode} })
+    const logfc_url = `${static_url}/logfctable`;
+    axios.get(logfc_url, { params: { id: selected.imaging_barcode, cutoff: 2 } })
       .then(response => {
         const result = JSON.parse(response.data);
         setTABLE_ROWS(result);
@@ -122,7 +145,8 @@ const AxiosGetRequest = () => {
 
     // Get new plot 1
     setPlot1(null);
-    const plot1_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot1"
+    
+    const plot1_url = `${static_url}/plot1`;
     axios.get(plot1_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -135,7 +159,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 2
     setPlot2(null);
-    const plot2_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot2"
+    const plot2_url = `${static_url}/plot2`;
     axios.get(plot2_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -148,7 +172,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 3
     setPlot3(null);
-    const plot3_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot3"
+    const plot3_url = `${static_url}/plot3`;
     axios.get(plot3_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -161,7 +185,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 4
     setPlot4(null);
-    const plot4_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot4"
+    const plot4_url = `${static_url}/plot4`;
     axios.get(plot4_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -174,7 +198,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 5
     setPlot5(null);
-    const plot5_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot5"
+    const plot5_url = `${static_url}/plot5`;
     axios.get(plot5_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -187,7 +211,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 6
     setPlot6(null);
-    const plot6_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot6"
+    const plot6_url = `${static_url}/plot6`;
     axios.get(plot6_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -255,22 +279,22 @@ const AxiosGetRequest = () => {
         <div className="mb-2 md:mb-6">
                     <h1 className={`text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold ${plot1 === null ? "hidden" : "block"}`}>Sample: {selectedSample?.cclf_id}</h1>
         </div>
-    <div ref={componentRef} className="grid grid-cols-12 gap-4">
+    <div ref={componentRef} className="grid grid-cols-12 grid-flow-col gap-4">
             {/* Plot 1 */}
-            <div  className={`flex flex-col col-span-full figure-animation-appear lg:col-span-4 bg-white shadow-md rounded-xl ${plot1 === null
+            <div  className={`flex flex-col col-span-full figure-animation-appear lg:row-start-1 lg:col-span-4 bg-white shadow-md rounded-xl ${plot1 === null
                                       ? "hidden"
                                       : "block"
                                   }
                               `}>
                                     <div className="px-5 pt-5">
                                       <header className="flex justify-between items-start mb-2">
-                                      <div className="text-lg font-semibold text-gray-800">Plot 1 Title here</div>
+                                      <div className="text-lg font-semibold text-gray-800">{plot1_title}</div>
 
                                       {/* QC call placeholder */}
                                         <div className={`text-md font-medium px-1.5 rounded-full
                                           ${selectedSample?.qc_technical === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_technical === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_technical === "Pass" ? "Pass" : selectedSample?.qc_technical === "Fail" ? "Fail" : "Pending"}</div>
                                       </header>
-                                      <div className="text-xs font-semibold text-gray-400 mb-1">Plot 1 Caption here {selectedSample?.qc_technical}</div>
+                                      <div className="text-xs font-semibold text-gray-400 mb-1">{plot1_subtitle}</div>
                                     </div>
                                     <div className="grow max-h-[450px] flex justify-center">
                                           <img className="py-4 px-4" width={2362} height={2362} src={plot1} />
@@ -278,101 +302,100 @@ const AxiosGetRequest = () => {
             </div>
 
             {/* Plot 2 */}
-            <div  className={`flex flex-col figure-animation-appear col-span-full lg:col-span-8 bg-white shadow-md rounded-xl ${plot2 === null
+            <div  className={`flex flex-col figure-animation-appear col-span-full lg:row-start-1 lg:col-span-8 bg-white shadow-md rounded-xl ${plot2 === null
                                       ? "hidden"
                                       : "block"
                                   }
                               `}>
                                     <div className="px-5 pt-5">
                                       <header className="flex justify-between items-start mb-2">
-                                      <div className="text-lg font-semibold text-gray-800">Plot 2 Title here</div>
+                                      <div className="text-lg font-semibold text-gray-800">{plot2_title}</div>
 
                                       {/* QC call placeholder */}
                                         <div className={`text-md font-medium px-1.5 rounded-full
                                           ${selectedSample?.qc_technical === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_technical === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_technical === "Pass" ? "Pass" : selectedSample?.qc_technical === "Fail" ? "Fail" : "Pending"}</div>
                                       </header>
-                                      <div className="text-xs font-semibold text-gray-400 mb-1">Plot 2 Caption here {selectedSample?.qc_technical}</div>
+                                      <div className="text-xs font-semibold text-gray-400 mb-1">{plot2_subtitle}</div>
                                     </div>
                                     <div className="grow max-h-[450px] flex justify-center">
                                       <img className="py-4 px-4" width={4133} height={2362} src={plot2} />
                                     </div>
             </div>
             {/* Plot 3 */}
-            <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-full bg-white shadow-md rounded-xl ${plot3 === null
+            <div className={`flex flex-col figure-animation-appear col-span-full lg:row-start-2 lg:col-span-full bg-white shadow-md rounded-xl ${plot3 === null
                           ? "hidden"
                           : "block"
                       }
                   `}>
                         <div className="px-5 pt-5">
                           <header className="flex justify-between items-start mb-2">
-                          <div className="text-lg font-semibold text-gray-800">Plot 3 Title here</div>
+                          <div className="text-lg font-semibold text-gray-800">{plot3_title}</div>
 
                           {/* QC call placeholder */}
                             <div className={`text-md font-medium px-1.5 rounded-full
                               ${selectedSample?.qc_tumorcontent === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_tumorcontent === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_tumorcontent === "Pass" ? "Pass" : selectedSample?.qc_tumorcontent === "Fail" ? "Fail" : "Pending"}</div>
                           </header>
-                          <div className="text-xs font-semibold text-gray-400 mb-1">Plot 3 Caption here {selectedSample?.qc_technical}</div>
+                          <div className="text-xs font-semibold text-gray-400 mb-1">{plot3_subtitle}</div>
                         </div>
                         <div className="grow max-h-[450px] flex justify-center">
                           <img className="py-4 px-4" width={9448} height={2362} src={plot3} />
                         </div>
             </div>
             {/* Plot 4 */}
-            <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-4 bg-white shadow-md rounded-xl ${plot4 === null
+            <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-4 lg:row-span-1 lg:row-start-3 bg-white shadow-md rounded-xl ${plot4 === null
                           ? "hidden"
                           : "block"
                       }
                   `}>
                         <div className="px-5 pt-5">
                           <header className="flex justify-between items-start mb-2">
-                          <div className="text-lg font-semibold text-gray-800">Plot 4 Title here</div>
+                          <div className="text-lg font-semibold text-gray-800">{plot4_title}</div>
 
                           {/* QC call placeholder */}
                             <div className={`text-md font-medium px-1.5 rounded-full
                               ${selectedSample?.qc_tumorcontent === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_tumorcontent === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_tumorcontent === "Pass" ? "Pass" : selectedSample?.qc_tumorcontent === "Fail" ? "Fail" : "Pending"}</div>
                           </header>
-                          <div className="text-xs font-semibold text-gray-400 mb-1">Plot 4 Caption here {selectedSample?.qc_technical}</div>
+                          <div className="text-xs font-semibold text-gray-400 mb-1">{plot4_subtitle}</div>
                         </div>
                         <div className="grow aspect-[2/1] flex justify-center">
                           <img className="py-4 px-4" width={4133} height={2362} src={plot4} />
                         </div>
             </div>
-           {/* Plot 5 */}
-           <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-4 bg-white shadow-md rounded-xl ${plot5 === null
+                       {/* Plot 5 */}
+           <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-8 lg:col-start-1 lg:row-span-2 lg:row-start-3 bg-white shadow-md rounded-xl ${plot5 === null
                           ? "hidden"
                           : "block"
                       }
                   `}>
                         <div className="px-5 pt-5">
                           <header className="flex justify-between items-start mb-2">
-                          <div className="text-lg font-semibold text-gray-800">Plot 5 Title here</div>
+                          <div className="text-lg font-semibold text-gray-800">{plot5_title}</div>
 
                           {/* QC call placeholder */}
                             <div className={`text-md font-medium px-1.5 rounded-full
                               ${selectedSample?.qc_tumorcontent === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_tumorcontent === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_tumorcontent === "Pass" ? "Pass" : selectedSample?.qc_tumorcontent === "Fail" ? "Fail" : "Pending"}</div>
                           </header>
-                          <div className="text-xs font-semibold text-gray-400 mb-1">Plot 5 Caption here {selectedSample?.qc_technical}</div>
+                          <div className="text-xs font-semibold text-gray-400 mb-1">{plot5_subtitle}</div>
                         </div>
                         <div className="grow aspect-[1/1] flex justify-center">
                           <img className="py-4 px-4" width={3543} height={3543} src={plot5} />
                         </div>
             </div>
-
            {/* Plot 6 */}
-           <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-4 bg-white shadow-md rounded-xl ${plot6 === null
+           <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-4 lg:row-start-4 lg:row-span-1 bg-white shadow-md rounded-xl ${plot6 === null
                           ? "hidden"
                           : "block"
                       }
                   `}>
                         <div className="px-5 pt-5">
                           <header className="flex justify-between items-start mb-2">
-                          <div className="text-lg font-semibold text-gray-800">Plot 6 Title here</div>
+                          <div className="text-lg font-semibold text-gray-800">{plot6_title}</div>
 
                           {/* QC call placeholder */}
                             <div className={`text-md font-medium px-1.5 rounded-full
                               ${selectedSample?.qc_tumorcontent === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_tumorcontent === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_tumorcontent === "Pass" ? "Pass" : selectedSample?.qc_tumorcontent === "Fail" ? "Fail" : "Pending"}</div>
                           </header>
-                          <div className="text-xs font-semibold text-gray-400 mb-1">Plot 6 Caption here {selectedSample?.qc_technical}</div>
+                          <div className="text-xs font-semibold text-gray-400 mb-1">{plot6_subtitle}</div>
                         </div>
                         <div className="grow aspect-[1/1] flex justify-center">
                           <img className="py-4 px-4" width={2362} height={2362} src={plot6} />
@@ -383,7 +406,7 @@ const AxiosGetRequest = () => {
                                 {/* TABLE  see https://blog.logrocket.com/creating-react-sortable-table/ for sorting */}
 
 
-<div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-full bg-white shadow-md rounded-xl ${plot6 === null
+<div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-full lg:row-start-5 bg-white shadow-md rounded-xl ${plot6 === null
                           ? "hidden"
                           : "block"
                       }
@@ -394,10 +417,13 @@ const AxiosGetRequest = () => {
         <div className="mt-2 flex items-center justify-between gap-8">
           <div>
             <Typography variant="h5" color="blue-gray">
-              Log-fold change table
+              {table1_title}
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
-              Relative to number of viable cancer cells at start. Showing the final timepoint in this experiment.
+              {table1_subtitle}
+            </Typography>
+            <Typography color="gray" className="mt-0 text-xs">
+              {table1_subsubtitle}
             </Typography>
           </div>
         </div>
@@ -433,6 +459,10 @@ const AxiosGetRequest = () => {
                 dose_u_m,
                 logfc_labelled,
                 logfc_unlabelled,
+                n_tumor_alive_labelled,
+                n_tumor_alive_unlabelled,
+                start_alive_labelled,
+                start_alive_unlabelled,
                 status }, index) => {
                 const isLast = index === TABLE_ROWS.length - 1;
                 const classes = isLast
@@ -479,15 +509,25 @@ const AxiosGetRequest = () => {
                       </Typography>
                     </td>
                     <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {logfc_labelled}
-                      </Typography>
+                      <div className="flex flex-col">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {logfc_labelled}
+                        </Typography>
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal opacity-70"
+                          >
+                            {"("}{start_alive_labelled}{" to "}{n_tumor_alive_labelled}{")"}
+                          </Typography>
+                        </div>
                     </td>
                     <td className={classes}>
+                    <div className="flex flex-col">
                       <Typography
                         variant="small"
                         color="blue-gray"
@@ -495,14 +535,22 @@ const AxiosGetRequest = () => {
                       >
                         {logfc_unlabelled}
                       </Typography>
+                      <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal opacity-70"
+                          >
+                            {"("}{start_alive_unlabelled}{" to "}{n_tumor_alive_unlabelled}{")"}
+                          </Typography>
+                      </div>
                     </td>
                     <td className={classes}>
                       <div className="w-max">
                         <Chip
                           variant="ghost"
                           size="sm"
-                          value={status === "active" ? "active" : "inactive"}
-                          color={status === "active" ? "green" : "blue-gray"}
+                          value={status}
+                          color={status === "active" ? "green" : status === "reference" ? "blue" : "blue-gray"}
                         />
                       </div>
                     </td>
@@ -585,16 +633,16 @@ const AxiosGetRequest = () => {
                               `}>
                                     <div className="px-5 pt-5">
                                       <header className="flex justify-between items-start mb-2">
-                                      <div className="text-lg font-semibold text-gray-800">Plot 1 Title here</div>
+                                      <div className="text-lg font-semibold text-gray-800">{plot1_title}</div>
 
                                       {/* QC call placeholder */}
                                         <div className={`text-md font-medium px-1.5 rounded-full
                                           ${selectedSample?.qc_technical === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_technical === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_technical === "Pass" ? "Pass" : selectedSample?.qc_technical === "Fail" ? "Fail" : "Pending"}</div>
                                       </header>
-                                      <div className="text-xs font-semibold text-gray-400 mb-1">Plot 1 Caption here {selectedSample?.qc_technical}</div>
+                                      <div className="text-[8px] font-semibold text-gray-400 mb-1">{plot1_subtitle}</div>
                                     </div>
-                                    <div className="grow max-h-[450px] flex justify-center">
-                                          <img className="py-4 px-4" width={2362} height={2362} src={plot1} />
+                                    <div className="grow max-h-[180px] flex justify-center">
+                                          <img className="py-2 px-4" width={2362} height={2362} src={plot1} />
                                     </div>
             </div>
 
@@ -606,16 +654,16 @@ const AxiosGetRequest = () => {
                               `}>
                                     <div className="px-5 pt-5">
                                       <header className="flex justify-between items-start mb-2">
-                                      <div className="text-lg font-semibold text-gray-800">Plot 2 Title here</div>
+                                      <div className="text-lg font-semibold text-gray-800">{plot2_title}</div>
 
                                       {/* QC call placeholder */}
                                         <div className={`text-md font-medium px-1.5 rounded-full
                                           ${selectedSample?.qc_technical === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_technical === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_technical === "Pass" ? "Pass" : selectedSample?.qc_technical === "Fail" ? "Fail" : "Pending"}</div>
                                       </header>
-                                      <div className="text-xs font-semibold text-gray-400 mb-1">Plot 2 Caption here {selectedSample?.qc_technical}</div>
+                                      <div className="text-[8px] font-semibold text-gray-400 mb-1">{plot2_subtitle}</div>
                                     </div>
-                                    <div className="grow max-h-[250px] flex justify-center">
-                                      <img className="py-4 px-4" width={350} height={200} src={plot2} />
+                                    <div className="grow max-h-[280px] flex justify-center">
+                                      <img className="py-2 px-4" width={350} height={200} src={plot2} />
                                     </div>
             </div>
             {/* Plot 3 */}
@@ -626,16 +674,16 @@ const AxiosGetRequest = () => {
                   `}>
                         <div className="px-5 pt-5">
                           <header className="flex justify-between items-start mb-2">
-                          <div className="text-lg font-semibold text-gray-800">Plot 3 Title here</div>
+                          <div className="text-lg font-semibold text-gray-800">{plot3_title}</div>
 
                           {/* QC call placeholder */}
                             <div className={`text-md font-medium px-1.5 rounded-full
                               ${selectedSample?.qc_tumorcontent === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_tumorcontent === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_tumorcontent === "Pass" ? "Pass" : selectedSample?.qc_tumorcontent === "Fail" ? "Fail" : "Pending"}</div>
                           </header>
-                          <div className="text-xs font-semibold text-gray-400 mb-1">Plot 3 Caption here {selectedSample?.qc_technical}</div>
+                          <div className="text-[8px] font-semibold text-gray-400 mb-1">{plot3_subtitle}</div>
                         </div>
                         <div className="grow max-h-[450px] flex justify-center">
-                          <img className="py-4 px-4" width={9448} height={2362} src={plot3} />
+                          <img className="py-2 px-4" width={9448} height={2362} src={plot3} />
                         </div>
             </div>
             {/* Plot 4 */}
@@ -646,16 +694,16 @@ const AxiosGetRequest = () => {
                   `}>
                         <div className="px-5 pt-5">
                           <header className="flex justify-between items-start mb-2">
-                          <div className="text-lg font-semibold text-gray-800">Plot 4 Title here</div>
+                          <div className="text-lg font-semibold text-gray-800">{plot4_title}</div>
 
                           {/* QC call placeholder */}
                             <div className={`text-md font-medium px-1.5 rounded-full
                               ${selectedSample?.qc_tumorcontent === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_tumorcontent === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_tumorcontent === "Pass" ? "Pass" : selectedSample?.qc_tumorcontent === "Fail" ? "Fail" : "Pending"}</div>
                           </header>
-                          <div className="text-xs font-semibold text-gray-400 mb-1">Plot 4 Caption here {selectedSample?.qc_technical}</div>
+                          <div className="text-[8px] font-semibold text-gray-400 mb-1">{plot4_subtitle}</div>
                         </div>
-                        <div className="grow aspect-[2/1] flex justify-center">
-                          <img className="py-4 px-4" width={4133} height={2362} src={plot4} />
+                        <div className="grow max-h-[200px] aspect-[2/1] flex justify-center">
+                          <img className="py-2 px-4" width={4133} height={2362} src={plot4} />
                         </div>
             </div>
            {/* Plot 5 */}
@@ -666,16 +714,16 @@ const AxiosGetRequest = () => {
                   `}>
                         <div className="px-5 pt-5">
                           <header className="flex justify-between items-start mb-2">
-                          <div className="text-lg font-semibold text-gray-800">Plot 5 Title here</div>
+                          <div className="text-lg font-semibold text-gray-800">{plot5_title}</div>
 
                           {/* QC call placeholder */}
                             <div className={`text-md font-medium px-1.5 rounded-full
                               ${selectedSample?.qc_tumorcontent === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_tumorcontent === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_tumorcontent === "Pass" ? "Pass" : selectedSample?.qc_tumorcontent === "Fail" ? "Fail" : "Pending"}</div>
                           </header>
-                          <div className="text-xs font-semibold text-gray-400 mb-1">Plot 5 Caption here {selectedSample?.qc_technical}</div>
+                          <div className="text-[8px] font-semibold text-gray-400 mb-1">{plot5_subtitle}</div>
                         </div>
-                        <div className="grow aspect-[1/1] flex justify-center">
-                          <img className="py-4 px-4" width={3543} height={3543} src={plot5} />
+                        <div className="grow max-h-[200px] aspect-[1/1] flex justify-center">
+                          <img className="py-2 px-4" width={3543} height={3543} src={plot5} />
                         </div>
             </div>
 
@@ -687,16 +735,16 @@ const AxiosGetRequest = () => {
                   `}>
                         <div className="px-5 pt-5">
                           <header className="flex justify-between items-start mb-2">
-                          <div className="text-lg font-semibold text-gray-800">Plot 6 Title here</div>
+                          <div className="text-lg font-semibold text-gray-800">{plot6_title}</div>
 
                           {/* QC call placeholder */}
                             <div className={`text-md font-medium px-1.5 rounded-full
                               ${selectedSample?.qc_tumorcontent === "Pass" ? "text-green-700 bg-green-500/20" : selectedSample?.qc_tumorcontent === "Fail" ? "text-red-700 bg-red-500/20 " : "text-blue-700 bg-blue-500/20 "}`}>{selectedSample?.qc_tumorcontent === "Pass" ? "Pass" : selectedSample?.qc_tumorcontent === "Fail" ? "Fail" : "Pending"}</div>
                           </header>
-                          <div className="text-xs font-semibold text-gray-400 mb-1">Plot 6 Caption here {selectedSample?.qc_technical}</div>
+                          <div className="text-[8px] font-semibold text-gray-400 mb-1">{plot6_subtitle}</div>
                         </div>
-                        <div className="grow aspect-[1/1] flex justify-center">
-                          <img className="py-4 px-4" width={2362} height={2362} src={plot6} />
+                        <div className="grow max-h-[200px] aspect-[1/1] flex justify-center">
+                          <img className="py-2 px-4" width={2362} height={2362} src={plot6} />
                         </div>
             </div>
 
@@ -715,11 +763,14 @@ const AxiosGetRequest = () => {
       <CardHeader floated={false} shadow={false} className="rounded-none">
         <div className="mt-2 flex items-center justify-between gap-8">
           <div>
-            <Typography variant="h5" color="blue-gray">
-              Log-fold change table
+          <Typography variant="h5" color="blue-gray">
+            {table1_title}
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
-              Relative to number of viable cancer cells at start. Showing the final timepoint in this experiment.
+            {table1_subtitle}
+            </Typography>
+            <Typography color="gray" className="mt-0 text-xs">
+            {table1_subsubtitle}
             </Typography>
           </div>
         </div>
@@ -752,6 +803,10 @@ const AxiosGetRequest = () => {
                 dose_u_m,
                 logfc_labelled,
                 logfc_unlabelled,
+                n_tumor_alive_labelled,
+                n_tumor_alive_unlabelled,
+                start_alive_labelled,
+                start_alive_unlabelled,
                 status }, index) => {
                 const isLast = index === TABLE_ROWS.length - 1;
                 const classes = isLast
@@ -798,15 +853,25 @@ const AxiosGetRequest = () => {
                       </Typography>
                     </td>
                     <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {logfc_labelled}
-                      </Typography>
+                      <div className="flex flex-col">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {logfc_labelled}
+                        </Typography>
+                        <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal opacity-70"
+                          >
+                            {"("}{start_alive_labelled}{" to "}{n_tumor_alive_labelled}{")"}
+                          </Typography>
+                        </div>
                     </td>
                     <td className={classes}>
+                    <div className="flex flex-col">
                       <Typography
                         variant="small"
                         color="blue-gray"
@@ -814,14 +879,22 @@ const AxiosGetRequest = () => {
                       >
                         {logfc_unlabelled}
                       </Typography>
+                      <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal opacity-70"
+                          >
+                            {"("}{start_alive_unlabelled}{" to "}{n_tumor_alive_unlabelled}{")"}
+                          </Typography>
+                      </div>
                     </td>
                     <td className={classes}>
                       <div className="w-max">
                         <Chip
                           variant="ghost"
                           size="sm"
-                          value={status === "active" ? "active" : "inactive"}
-                          color={status === "active" ? "green" : "blue-gray"}
+                          value={status}
+                          color={status === "active" ? "green" : status === "reference" ? "blue" : "blue-gray"}
                         />
                       </div>
                     </td>
@@ -833,7 +906,7 @@ const AxiosGetRequest = () => {
         </table>
         <div className=""></div>
       </CardBody>
-      <CardFooter className="flex mb-48 items-center justify-between border-t border-blue-gray-50 p-4">
+      <CardFooter className="flex mb-32 items-center justify-between border-t border-blue-gray-50 p-4">
             <div></div>
       </CardFooter>
     </Card>
@@ -843,8 +916,12 @@ const AxiosGetRequest = () => {
 
 
 
-              <div className={`flex flex-col col-span-full bg-white shadow-md rounded-xl `}>
-              <div className="mb-12 max-w-[360px] lg:mb-16">
+          <div className={`flex flex-col items-center col-span-full bg-white shadow-md rounded-xl `}>
+                <div className="flex flex-wrap justify-between">
+                  <AboutBiosensorTeam />
+                </div>
+                
+              <div className="flex flex-col items-center mb-12 max-w-[360px] lg:mb-16">
                 <div className="text-lg font-semibold text-gray-800 mt-2"><img
                                             src="/images/logo/logo-2.png"
                                             alt="HTS"
@@ -870,6 +947,16 @@ const AxiosGetRequest = () => {
                       </div>
                     </div>
                 </div>
+                <div className="mb-0 max-w-[210px] lg:mb-16">
+                  <img
+                    src="/images/logo/KI_logo_new_stacked_gray_RGB.png"
+                    alt="Koch Institute"
+                    width={358}
+                    height={110}
+                    className="py-4 px-4 block w-[240px] z-50"
+                  />
+
+               </div>
                 <div className="flex items-center">
                  
                 </div>

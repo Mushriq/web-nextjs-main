@@ -41,7 +41,7 @@ const Footer = () => {
                     height={30}
                   />
                 </Link>
-                <div className="dark:text-body-color-dark mb-9 text-base leading-relaxed text-body-color">
+                <div className="dark:text-body-color-dark mb-2 text-base leading-relaxed text-body-color">
                     <div className="flex items-start space-x-2.5">
                       <div className="flex-shrink-0">{mapIcon}</div>
                       <div>
@@ -59,10 +59,26 @@ const Footer = () => {
                       </div>
                     </div>
                 </div>
-                <div className="flex items-center">
-                 
-                </div>
               </div>
+              <div className="mb-8 max-w-[210px] lg:mb-16">
+                <Link href="https://ki.mit.edu/" className="mb-8 inline-block">
+                  <Image
+                    src="/images/logo/KI_logo_new_stacked_gray_RGB.png"
+                    alt="logo"
+                    className="w-full dark:hidden"
+                    width={200}
+                    height={20}
+                  />
+                  <Image
+                    src="/images/logo/KI_logo_new_stacked_white.png"
+                    alt="logo"
+                    className="hidden w-full dark:block"
+                    width={200}
+                    height={20}
+                  />
+                </Link>
+
+               </div>
             </div>
 
             <div className="w-full px-4 sm:w-1/2 md:w-1/2 lg:w-2/12 xl:w-2/12">

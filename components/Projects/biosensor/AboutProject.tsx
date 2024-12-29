@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import SectionTitle from "../../Common/SectionTitle";
+import AboutBiosensorTeam from "./AboutTeam";
+
 
 const checkIcon = (
   <svg width="16" height="13" viewBox="0 0 16 13" className="fill-current">
@@ -32,7 +34,7 @@ const AboutBiosensorProject = () => {
                   src="/images/projects/biosensor/picture1.png"
                   alt="biosensor-image"
                   fill
-                  className="block drop-shadow-three dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
+                  className="block drop-shadow-xl rounded-2xl dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />
               </div>
             </div>
@@ -43,6 +45,9 @@ const AboutBiosensorProject = () => {
       </div>
 
     </section>
+
+    <AboutBiosensorTeam />
+
     </>
   );
 };
