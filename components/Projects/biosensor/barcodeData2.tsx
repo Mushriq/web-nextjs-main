@@ -86,7 +86,7 @@ const AxiosGetRequest = () => {
 
   useEffect( () => {
 
-    const url =  "http://localhost:8000/list" // "https://jsonplaceholder.typicode.com/users" //
+    const url =  "https://hts-biosensor-plumber-353269782212.us-central1.run.app/list" // "https://jsonplaceholder.typicode.com/users" //
 
     axios.get(url)
       .then(response => {
@@ -109,7 +109,7 @@ const AxiosGetRequest = () => {
 
     // Get new logfc table data
     setTABLE_ROWS(null);
-    const logfc_url = "http://localhost:8000/logfctable"
+    const logfc_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/logfctable"
     axios.get(logfc_url, { params: { id: selected.imaging_barcode} })
       .then(response => {
         const result = JSON.parse(response.data);
@@ -122,7 +122,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 1
     setPlot1(null);
-    const plot1_url = "http://localhost:8000/plot1"
+    const plot1_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot1"
     axios.get(plot1_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -135,7 +135,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 2
     setPlot2(null);
-    const plot2_url = "http://localhost:8000/plot2"
+    const plot2_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot2"
     axios.get(plot2_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -148,7 +148,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 3
     setPlot3(null);
-    const plot3_url = "http://localhost:8000/plot3"
+    const plot3_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot3"
     axios.get(plot3_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -161,7 +161,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 4
     setPlot4(null);
-    const plot4_url = "http://localhost:8000/plot4"
+    const plot4_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot4"
     axios.get(plot4_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -174,7 +174,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 5
     setPlot5(null);
-    const plot5_url = "http://localhost:8000/plot5"
+    const plot5_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot5"
     axios.get(plot5_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
@@ -187,7 +187,7 @@ const AxiosGetRequest = () => {
 
     // Get new plot 6
     setPlot6(null);
-    const plot6_url = "http://localhost:8000/plot6"
+    const plot6_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app/plot6"
     axios.get(plot6_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
       .then(response => {
         const plot_data = URL.createObjectURL(response.data);
