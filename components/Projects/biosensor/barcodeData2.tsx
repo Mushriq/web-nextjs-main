@@ -79,7 +79,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled", "Status"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "http://0.0.0.0:8000" // "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
+  const static_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
 
   // For Printing
   const componentRef = React.useRef(null);
