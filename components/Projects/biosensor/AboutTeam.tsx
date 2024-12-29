@@ -22,37 +22,43 @@ const AboutBiosensorTeam = () => {
                   alt="Boehm Lab"
                   width={100}
                   height={30}
-                  className="block drop-shadow-xl dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
+                  className="block drop-shadow-xl mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />
                 <img
                   src="/images/projects/biosensor/kilogo.svg"
                   alt="Koch Institute"
                   width={140}
                   height={30}
-                  className="block drop-shadow-xl dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
+                  className="block drop-shadow-xl  mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />
                                 <img
-                  src="/images/projects/biosensor/broadlogo.png"
+                  src="/images/projects/biosensor/broadlogo-type.png"
+                  alt="Broad Institute"
+                  width={133}
+                  height={30}
+                  className="block dark:hidden drop-shadow-xl  mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
+                />
+                  <img
+                  src="/images/projects/biosensor/broadlogo-white.png"
                   alt="Broad Institute"
                   width={100}
                   height={30}
-                  className="block drop-shadow-xl dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
-                />
-            
+                  className="hidden dark:block drop-shadow-xl  mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
+                />           
             <img
                   src="/images/projects/biosensor/mghlogo.svg"
                   alt="MGH"
                   width={190}
                   height={30}
-                  className="block drop-shadow-xl dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
+                  className="block drop-shadow-xl mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />
 
 <img
                   src="/images/projects/biosensor/dfcilogo.png"
                   alt="DFCI"
-                  width={120}
+                  width={133}
                   height={30}
-                  className="block drop-shadow-xl dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
+                  className="block drop-shadow-xl mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />
 
               </div>

@@ -49,30 +49,6 @@ const menuData: Menu[] = [
         paragraph: "A label-free imaging platform with AI for rapid primary cancer screening",
         newTab: false,
       },
-      {
-        id: 32,
-        title: "Functional Precision Medicine",
-        path: "/fpm",
-        newTab: false,
-      },
-      {
-        id: 33,
-        title: "Sign In Page",
-        path: "/signin",
-        newTab: false,
-      },
-      {
-        id: 34,
-        title: "Sign Up Page",
-        path: "/signup",
-        newTab: false,
-      },
-      {
-        id: 35,
-        title: "Error Page",
-        path: "/error",
-        newTab: false,
-      },
     ],
   },
   {
@@ -111,26 +87,6 @@ const menuData: Menu[] = [
     title: "News",
     path: "/blog",
     newTab: false,
-    submenu: [
-      {
-        id: 51,
-        title: "Blog Grid Page",
-        path: "/blog",
-        newTab: false,
-      },
-      {
-        id: 52,
-        title: "Blog Sidebar Page",
-        path: "/blog-sidebar",
-        newTab: false,
-      },
-      {
-        id: 53,
-        title: "Blog Details Page",
-        path: "/blog-details",
-        newTab: false,
-      },
-    ],
   },
   {
     id: 6,

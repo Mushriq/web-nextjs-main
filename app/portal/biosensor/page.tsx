@@ -4,6 +4,12 @@ import Link from "next/link";
 import  WrapperComponent from "@/components/Projects/biosensor/comptoprint";
 import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "Data Portal | Biosensor | High Throughput Sciences",
+  description: "Biosensor project data.",
+  // other metadata
+};
+
 const ResearchBiosensorPage = () => {
   return (
     <div className="mt-10">

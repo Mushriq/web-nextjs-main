@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "HTS Instruments Page",
-  description: "This is the Instruments Page for HTS",
+  title: "Research | High Throughput Sciences",
+  description: "Explore our ongoing research projects at HTS.",
   // other metadata
 };
 
