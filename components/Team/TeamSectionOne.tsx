@@ -19,7 +19,7 @@ const TeamSectionOne = () => {
             />
 
       <div className="container mt-10">
-        <div className="flex flex-col fade-in-fwd md:flex-row items-center justify-center">
+        <div className="grid grid-cols-1 fade-in-fwd lg:grid-cols-3 items-start justify-center">
           {teamData.map((member, index) => (
 
             <div key={index} className="flex flex-col items-center px-5 mb-5">

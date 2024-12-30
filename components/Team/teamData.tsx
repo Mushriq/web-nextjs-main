@@ -9,8 +9,8 @@ const teamData: TeamMember[] = [
     role: "Scientific Director",
     photo: "/images/team/person1.png",
     github: "",
-    linkedin: "http://www.google.com",
-    paragraph: "Mushriq is a computational biologist with expertise in cancer genomics and bioinformatics. He is passionate about developing computational tools to analyze large-scale genomics data and uncover novel insights into cancer biology.",
+    linkedin: "https://www.linkedin.com/in/mushriq",
+    paragraph: "Mushriq completed his graduate studies at the University of Toronto in the Developmental & Stem Cell Biology program at the Hospital for Sick Children (Toronto). Moving to the Broad Institute as postdoc, he honed his computational skills to harness existing cancer datasets to formulate hypotheses for rare diseases. Now leading the HTS team, he is excited to apply this experience in building the next generation of datasets. Mushriq is passionate about teaching and he's happiest when there's a whiteboard and a marker nearby.",
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ const teamData: TeamMember[] = [
     photo: "/images/team/person2.png",
     github: "",
     linkedin: "http://www.google.com",
-    paragraph: "Ashley is a research associate with a background in molecular biology and bioinformatics. She is interested in developing computational tools to analyze high-throughput data and uncover novel insights into cancer biology.",
+    paragraph: "...",
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const teamData: TeamMember[] = [
     photo: "/images/team/person3.png",
     github: "",
     linkedin: "http://www.google.com",
-    paragraph: "Nicole is a research associate with a background in molecular biology and bioinformatics. She is interested in developing computational tools to analyze high-throughput data and uncover novel insights into cancer biology.",
+    paragraph: "...",
   },
 ];
 export default teamData;
