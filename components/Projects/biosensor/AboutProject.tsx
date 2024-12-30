@@ -20,9 +20,10 @@ const AboutBiosensorProject = () => {
           <div className="-mx-4 flex flex-wrap items-center">
             <div className="w-full section-animation px-4 lg:w-1/2">
               <SectionTitle
-                title="Rapidly evaluating cancer dependencies by label-free imaging of zero-passage primary cells"
-                paragraph="We are developing a label-free imaging platform to enable rapid, high-throughput genetic and pharmacological screening of primary cancer cells, including non-dividing ones, without the need for intermediate model generation. By using malignant ascites from gastroesophageal cancer patients, we are optimizing workflows to preserve cell viability and heterogeneity within 24 hours of collection. Predictive models, trained on brightfield images, achieve high accuracy in inferring cell identity and viability. Our approach broadens the range of patient samples that can be studied, enhancing preclinical discovery and facilitating future therapeutic nomination."
+                title="Rapid imaging and machine learning-based evaluation of drug sensitivity in primary cells"
+                paragraph="We are developing a label-free imaging platform to enable rapid, high-throughput genetic and pharmacological screening of primary cancer cells, including non-dividing ones, without the need for intermediate model generation. By using malignant ascites from gastroesophageal cancer patients, we are optimizing workflows to preserve viability and heterogeneity within 24 hours of collection. Predictive models, trained on brightfield images, achieve high accuracy in inferring cell identity and viability. Our approach expands the range of patient samples that can be studied, enhancing preclinical discovery efforts and paving the way for personalized therapy nomination."
                 mb="0px"
+                width="800px"
               />
             </div>
 

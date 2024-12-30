@@ -20,14 +20,14 @@ const AboutBiosensorTeam = () => {
                 <img
                   src="/images/projects/biosensor/boehmlab.png"
                   alt="Boehm Lab"
-                  width={100}
+                  width={90}
                   height={30}
                   className="block drop-shadow-xl mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />
                 <img
                   src="/images/projects/biosensor/kilogo.svg"
                   alt="Koch Institute"
-                  width={140}
+                  width={180}
                   height={30}
                   className="block drop-shadow-xl  mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />
