@@ -176,7 +176,7 @@ const AxiosGetRequest = () => {
               </path>
             </svg>
           </div>
-          <div className="w-full min-w-[200px] ml-2 text-lg">Loading ...</div>
+          <div className="w-full min-w-[200px] ml-2 text-lg">Loading ... This may take up to 5 mins</div>
         </div>
 
     );
