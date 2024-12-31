@@ -2,6 +2,7 @@ import AboutSectionOne from "@/components/About/AboutSectionOne";
 import AboutSectionTwo from "@/components/About/AboutSectionTwo";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import Instrument1 from "@/components/Platform/Instrument1";
+import Instrument2 from "@/components/Platform/Instrument2";
 
 import { Metadata } from "next";
 
@@ -20,7 +21,7 @@ const PlatformPage = () => {
       /> */}
       <div style={{ marginBottom: "20px" }}></div>
       <Instrument1 />
-      <AboutSectionTwo />
+      <Instrument2 />
     </>
   );
 };

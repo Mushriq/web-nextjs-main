@@ -9,10 +9,9 @@ const AboutBiosensorTeam = () => {
         <div className="flex flex-wrap items-center">
           <div className="py-4">
             <h3 className="text-xl font-bold text-black dark:text-white">Principal Investigators</h3>
-            <p>Jesse Boehm (MIT)</p>
-            <p>Samuel Klempner (MGH)</p>
-            <p>Haeseong Park (DFCI)</p>
-            <p>Beth Cimini (Broad)</p>
+            <p>Jesse Boehm, PhD (MIT)</p>
+            <p>Samuel Klempner, MD (MGH)</p>
+            <p>Beth Cimini, PhD (Broad Institute)</p>
           </div>
           <div
                 className="flex flex-wrap gap-6 figure-animation-appear mx-auto lg:mr-0"
@@ -42,14 +41,6 @@ const AboutBiosensorTeam = () => {
                   src="/images/projects/biosensor/mghlogo.svg"
                   alt="MGH"
                   width={240}
-                  height={30}
-                  className="block drop-shadow-xl mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
-                />
-
-<img
-                  src="/images/projects/biosensor/dfcilogo.png"
-                  alt="DFCI"
-                  width={133}
                   height={30}
                   className="block drop-shadow-xl mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />
