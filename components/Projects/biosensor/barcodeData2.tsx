@@ -2,6 +2,7 @@
 import React , { useEffect, useState, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import AboutBiosensorTeam from './AboutTeam';
+import ReportSummaryCard from './reportSummaryCard'
 
 
 import axios from 'axios';
@@ -30,6 +31,7 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
+
 
 
 const mapIcon = (<svg width="25" height="25" viewBox="0 0 25 25" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -82,7 +84,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
+  const static_url = "http://0.0.0.0:8000" // "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -357,6 +359,25 @@ const AxiosGetRequest = () => {
                         `}
         dangerouslySetInnerHTML={{ __html:  plot1}} /> */}
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   {/* sample report */}
   <main className="grow">
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
@@ -364,475 +385,8 @@ const AxiosGetRequest = () => {
     <div ref={componentRef} className="grid grid-cols-12 gap-4">
 
 
-            {/* Sample Summary */}
-            <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-full lg:row-start-1 lg:row-span-1 bg-white shadow-md rounded-xl ${selectedSample
-                          ? "block"
-                          : "hidden"
-                      }
-                  `}>
-
-              
-<Card className="w-full h-full flex-col lg:flex-row overflow-scroll">
-      <CardHeader
-        shadow={false}
-        floated={false}
-        className="m-0 w-full lg:w-1/2 shrink-0 rounded-r-none"
-      >
-      <img className="py-4 px-4 h-full w-full object-cover" width={4133} height={2362} src={cellPic} />
-      </CardHeader>
-      <CardBody className="w-full">
-        <Typography variant="h4" color="black" className="mb-2 uppercase w-full">
-          Sample: {selectedSample?.sk_id} ({selectedSample?.imaging_barcode})
-        </Typography>
-        <Typography variant="h5" color="gray" className="mb-4 uppercase w-full">
-          Clinical ID: {selectedSample?.clinical_id} ({selectedSample?.age_at_sample_collection}{selectedSample?.sex})
-        </Typography>
-
-        <div className = "size-8 flex flex-row gap-4 mb-8 w-full justify-start">
-          
-          <Image
-                              src="/images/bits/body_site.svg"
-                              alt="Tx"
-                              className="block"
-                              width={32}
-                              height={32}
-                            />
-
-           <div className = "block w-full">{selectedSample?.anatomic_tumor_type}</div>
-          
-
-
-          <Image
-                              src="/images/bits/drug_pill.svg"
-                              alt="Tx"
-                              className="block"
-                              width={32}
-                              height={32}
-                            />
-
-           <div className = "block w-full">{selectedSample?.treatment}</div>
-          
-
-        </div>
-
-        <div className="flex flex-wrap justify-between">
-
-          <div className="block w-1/3">
-          <Typography color="gray" className="mb-0 font-normal w-full uppercase">
-          PD-L1
-        </Typography>
-        <Typography color="gray" className="mb-8 font-small w-full">
-          {selectedSample?.pd_l1}
-        </Typography>
-          </div>
-
-          <div className="block w-1/3">
-          <Typography color="gray" className="mb-0 font-normal w-full uppercase">
-          HER2
-        </Typography>
-        <Typography color="gray" className="mb-8 font-small w-full">
-          {selectedSample?.her2}
-        </Typography>
-          </div>
-
-          <div className="block w-1/3">
-          <Typography color="gray" className="mb-0 font-normal w-full uppercase">
-          MMR
-        </Typography>
-        <Typography color="gray" className="mb-8 font-small w-full">
-          {selectedSample?.mmr}
-        </Typography>
-          </div>
-
-
-
-        </div>
-        <Typography color="gray" className="mb-0 font-normal w-full uppercase">
-          Molecular Notes
-        </Typography>
-        <Typography color="gray" className="mb-8 font-small w-full">
-          {selectedSample?.molecular_notes}
-        </Typography>
-
-        
-        
-
-        <div className = "grid grid-cols-2 md:grid-cols-3 w-full place-items-center items-center justify-center gap-2">
-
-        <Tooltip placement="top"       
-          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
-          content={
-        <div className="w-80">
-          <Typography color="blue-gray" className="font-medium">
-            Days Since Collection
-          </Typography>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-normal opacity-80"
-          >
-            The number of days between collection at clinic and start of imaging.
-          </Typography>
-        </div>
-      }>
-        <div className={`relative size-32 ${selectedSample && selectedSample?.delta_days !== 'NA' ? "block" : "hidden"}`}>
-              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
-                  
-                ${parseInt(selectedSample?.delta_days) == 0
-                  ? "text-light-blue-500" 
-                  : parseInt(selectedSample?.delta_days) == 1
-                ? "text-green-600" 
-                : parseInt(selectedSample?.delta_days) == 2 
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*selectedSample?.delta_days/3} 100`} strokeLinecap="round"></circle>
-              </svg>
-              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
-                <span className={`text-2xl font-bold 
-
-                ${parseInt(selectedSample?.delta_days) == 0
-                  ? "text-light-blue-500" 
-                  : parseInt(selectedSample?.delta_days) == 1
-                ? "text-green-600" 
-                : parseInt(selectedSample?.delta_days) == 2 
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `}>{selectedSample?.delta_days}<span className="text-xs">{selectedSample?.delta_days === "1" ? " day" : " days"}</span></span>
-                <span className={`block text-xs   
-
-                ${parseInt(selectedSample?.delta_days) == 0
-                  ? "text-light-blue-500" 
-                  : parseInt(selectedSample?.delta_days) == 1
-                ? "text-green-600" 
-                : parseInt(selectedSample?.delta_days) == 2 
-                ? "text-amber-600" 
-                : "text-red-600"}
-
-                `}>Since Collection</span>
-              </div>
-            </div>
-      </Tooltip>
-
-      <Tooltip placement="top"       
-          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
-          content={
-        <div className="w-80">
-          <Typography color="blue-gray" className="font-medium">
-            Starting Viability
-          </Typography>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-normal opacity-80"
-          >
-            This is the Countess measurement of viability after all processing steps are done.
-          </Typography>
-        </div>
-      }>
-        <div className={`relative size-32 ${selectedSample && selectedSample?.post_process_viability_percent !== 'NA' ? "block" : "hidden"}`}>
-              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
-                  
-                ${parseFloat(selectedSample?.post_process_viability_percent) > 97.5
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.post_process_viability_percent) > 90
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.post_process_viability_percent) > 80 
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `} strokeWidth="1.5" strokeDasharray={`${0.5*selectedSample?.post_process_viability_percent} 100`} strokeLinecap="round"></circle>
-              </svg>
-              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
-                <span className={`text-2xl font-bold 
-
-                ${parseFloat(selectedSample?.post_process_viability_percent) > 97.5
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.post_process_viability_percent) > 90
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.post_process_viability_percent) > 80 
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `}>{selectedSample?.post_process_viability_percent}<span className="text-xs">%</span></span>
-                <span className={`block text-xs   
-
-                ${parseFloat(selectedSample?.post_process_viability_percent) > 97.5
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.post_process_viability_percent) > 90
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.post_process_viability_percent) > 80 
-                ? "text-amber-600" 
-                : "text-red-600"}
-
-                `}>Starting Viability</span>
-              </div>
-            </div>
-          </Tooltip>
-
-          <Tooltip placement="top"       
-          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
-          content={
-        <div className="w-80">
-          <Typography color="blue-gray" className="font-medium">
-            Average Cell Diameter
-          </Typography>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-normal opacity-80"
-          >
-            Average cell size of viable cells only. Line indicates percentile rank among all experiments.
-          </Typography>
-        </div>
-      }>
-            <div className={`relative size-32 ${selectedSample && selectedSample?.post_process_diameter !== 'NA' ? "block" : "hidden"}`}>
-              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
-                  
-                ${parseFloat(selectedSample?.diameter_percentile) > 0.9
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.diameter_percentile) > 0.6
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.diameter_percentile) > 0.4
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*selectedSample?.diameter_percentile} 100`} strokeLinecap="round"></circle>
-              </svg>
-              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
-                <span className={`text-2xl font-bold 
-
-                ${parseFloat(selectedSample?.diameter_percentile) > 0.9
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.diameter_percentile) > 0.6
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.diameter_percentile) > 0.4
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `}>{selectedSample?.post_process_diameter}<span className="text-xs">μm</span></span>
-                <span className={`block text-xs   
-
-                ${parseFloat(selectedSample?.diameter_percentile) > 0.9
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.diameter_percentile) > 0.6
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.diameter_percentile) > 0.4
-                ? "text-amber-600" 
-                : "text-red-600"}
-
-                `}>Average Diameter</span>
-                        
-
-
-              </div>
-            </div>
-          </Tooltip>
-
-
-          <Tooltip placement="top"       
-          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
-          content={
-        <div className="w-80">
-          <Typography color="blue-gray" className="font-medium">
-            Starting EPCAM+ Cells
-          </Typography>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-normal opacity-80"
-          >
-            The median per-well EPCAM+ TMRM+ total cell count (from 6 fields of view per well) from live staining. We use the 4-hour timepoint to allow TMRM time to activate. Line indicates percentile rank among all experiments.
-          </Typography>
-        </div>
-      }>
-            <div className={`relative size-32 ${selectedSample && selectedSample?.start_tumor_alive_labelled !== 'NA' ? "block" : "hidden"}`}>
-              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
-                  
-                ${parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.4
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*selectedSample?.start_tumor_alive_labelled_percentile} 100`} strokeLinecap="round"></circle>
-              </svg>
-              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
-                <span className={`text-2xl font-bold 
-
-                ${parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.4
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `}>{selectedSample?.start_tumor_alive_labelled}<span className="text-xs">cells</span></span>
-                <span className={`block text-xs   
-
-                ${parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.4
-                ? "text-amber-600" 
-                : "text-red-600"}
-
-                `}>EPCAM+ per Well</span>
-              </div>
-            </div>
-        </Tooltip>
-
-
-        <Tooltip placement="top"       
-          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
-          content={
-        <div className="w-80">
-          <Typography color="blue-gray" className="font-medium">
-            Controls Separation
-          </Typography>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-normal opacity-80"
-          >
-            This is the difference between the log-fold changes seen for Bortezomib and DMSO at the final timepoint. Line indicates percentile rank among all experiments.<span className="italic">This is a placeholder until we batch-calculate z-prime as a metric of screen quality.</span> 
-          </Typography>
-        </div>
-      }>
-            <div className={`relative size-32 ${selectedSample && selectedSample?.control_delta_logfc_labelled !== 'NA' ? "block" : "hidden"}`}>
-              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
-                  
-                ${parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.25
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*selectedSample?.control_delta_logfc_labelled_percentile} 100`} strokeLinecap="round"></circle>
-              </svg>
-              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
-                <span className={`text-2xl font-bold 
-
-                ${parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.25
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `}>{selectedSample?.control_delta_logfc_labelled}<span className="text-xs">lfc</span></span>
-                <span className={`block text-xs   
-
-                ${parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.25
-                ? "text-amber-600" 
-                : "text-red-600"}
-
-                `}>Controls Separation</span>
-              </div>
-            </div>
-        </Tooltip>
-
-
-
-
-
-        <Tooltip placement="top"       
-          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
-          content={
-        <div className="w-80">
-          <Typography color="blue-gray" className="font-medium">
-            Prediction Correlation
-          </Typography>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-normal opacity-80"
-          >
-            The pearson correlation between inferred label-free and fluorescence-based count of viable cancer cells per well in stained wells only at 24 hours. We use the 24-hour timepoint as fluorescence signal drops in some samples beyond ~30 hours.
-          </Typography>
-        </div>
-      }>
-            <div className={`relative size-32 ${selectedSample && selectedSample?.correlation !== 'NA' ? "block" : "hidden"}`}>
-              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
-                  
-                ${parseFloat(selectedSample?.correlation) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.correlation) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.correlation) > 0.25
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*(selectedSample?.correlation < 0 ? 0 : selectedSample?.correlation)} 100`} strokeLinecap="round"></circle>
-              </svg>
-              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
-                <span className={`text-2xl font-bold 
-
-                ${parseFloat(selectedSample?.correlation) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.correlation) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.correlation) > 0.25
-                ? "text-amber-600" 
-                : "text-red-600"}
-                
-                `}>{selectedSample?.correlation}</span>
-                <span className={`block text-xs   
-
-                ${parseFloat(selectedSample?.correlation) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.correlation) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.correlation) > 0.25
-                ? "text-amber-600" 
-                : "text-red-600"}
-
-                `}>Prediction Correlation</span>
-              </div>
-            </div>
-        </Tooltip>
-
-
-        </div>
-        
-        <Typography color="gray" className="mb-0 font-normal w-full uppercase">
-          Sample Comments
-        </Typography>
-        <Typography color="gray" className="mb-8 font-small w-full">
-          {selectedSample?.process_comments}
-        </Typography>
-      </CardBody>
-    </Card>
-
-
-
-
-
-            </div>
+{/* Sample Summary */}
+<ReportSummaryCard selectedSample={selectedSample} cellPic={cellPic} />
 
            
 
@@ -1165,11 +719,25 @@ const AxiosGetRequest = () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  {/* printable report */}
  <main className="grow printContent">
     <div ref={componentRef} className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto z-0">
         <div className="flex justify-between mb-2">
-                                      <div className="text-lg font-semibold text-gray-800">Sample: {selectedSample?.cclf_id}</div>
+                                      <div className="text-lg font-semibold text-gray-800">Experiment: {selectedSample?.imaging_barcode}</div>
                                       <div className="text-lg font-semibold text-gray-800"><img
                                             src="/images/logo/logo-2.png"
                                             alt="HTS"
@@ -1179,10 +747,20 @@ const AxiosGetRequest = () => {
                                           /></div>
 
          </div>
-    <div className="grid grid-cols-12 gap-6">
 
+
+    <div className="grid grid-cols-12 gap-4">
+
+{/* Sample Summary */}
+<ReportSummaryCard selectedSample={selectedSample} cellPic={cellPic} print={true} />
+
+<div className="flex col-span-full justify-between mb-2">
+                                      <div className="text-lg font-semibold text-gray-800">Experiment: {selectedSample?.imaging_barcode}</div>
+
+</div>
+           
            {/* Plot 1 */}
-           <div  className={`flex flex-col max-h-[300px] col-span-4 bg-white shadow-md rounded-xl ${plot1 === null
+           <div  className={`mt-2 flex flex-col max-h-[400px] col-span-4 bg-white shadow-md rounded-xl ${plot1 === null
                                       ? "hidden"
                                       : "block"
                                   }
@@ -1203,7 +781,7 @@ const AxiosGetRequest = () => {
             </div>
 
             {/* Plot 2 */}
-            <div  className={`flex flex-col max-h-[300px] col-span-8 bg-white shadow-md rounded-xl ${plot2 === null
+            <div  className={`mt-2 flex flex-col max-h-[400px] col-span-8 bg-white shadow-md rounded-xl ${plot2 === null
                                       ? "hidden"
                                       : "block"
                                   }
@@ -1223,7 +801,7 @@ const AxiosGetRequest = () => {
                                     </div>
             </div>
             {/* Plot 3 */}
-            <div className={`flex flex-col col-span-full bg-white shadow-md rounded-xl ${plot3 === null
+            <div className={`flex flex-col col-span-full max-h-[400px] bg-white shadow-md rounded-xl ${plot3 === null
                           ? "hidden"
                           : "block"
                       }
@@ -1243,7 +821,7 @@ const AxiosGetRequest = () => {
                         </div>
             </div>
             {/* Plot 4 */}
-            <div className={`flex flex-col col-span-4 bg-white shadow-md rounded-xl ${plot4 === null
+            <div className={`flex flex-col col-span-4 max-h-[400px] bg-white shadow-md rounded-xl ${plot4 === null
                           ? "hidden"
                           : "block"
                       }
@@ -1263,7 +841,7 @@ const AxiosGetRequest = () => {
                         </div>
             </div>
            {/* Plot 5 */}
-           <div className={`flex flex-col col-span-4 bg-white shadow-md rounded-xl ${plot5 === null
+           <div className={`flex flex-col col-span-4 max-h-[400px] bg-white shadow-md rounded-xl ${plot5 === null
                           ? "hidden"
                           : "block"
                       }
@@ -1284,7 +862,7 @@ const AxiosGetRequest = () => {
             </div>
 
            {/* Plot 6 */}
-           <div className={`flex flex-col col-span-4 bg-white shadow-md rounded-xl ${plot6 === null
+           <div className={`flex flex-col col-span-4 max-h-[400px] bg-white shadow-md rounded-xl ${plot6 === null
                           ? "hidden"
                           : "block"
                       }
@@ -1306,8 +884,14 @@ const AxiosGetRequest = () => {
 
 
 
+
+
                                 {/* TABLE  see https://blog.logrocket.com/creating-react-sortable-table/ for sorting */}
 
+<div className="mt-4 flex col-span-full justify-between mb-0">
+                                      <div className="text-lg font-semibold text-gray-800">Experiment: {selectedSample?.imaging_barcode}</div>
+
+</div>
 
 <div className={`flex flex-col col-span-full bg-white shadow-md rounded-xl ${plot6 === null
                           ? "hidden"
@@ -1371,6 +955,16 @@ const AxiosGetRequest = () => {
  
                 return (
                   <tr key={index}>
+                   <td className={classes}>
+                      <div className="w-max">
+                        <Chip
+                          variant="ghost"
+                          size="sm"
+                          value={status}
+                          color={status === "active" ? "green" : status === "reference" ? "blue" : "blue-gray"}
+                        />
+                      </div>
+                    </td>
                     <td className={classes}>
                       <Typography
                         variant="small"
@@ -1444,16 +1038,6 @@ const AxiosGetRequest = () => {
                           </Typography>
                       </div>
                     </td>
-                    <td className={classes}>
-                      <div className="w-max">
-                        <Chip
-                          variant="ghost"
-                          size="sm"
-                          value={status}
-                          color={status === "active" ? "green" : status === "reference" ? "blue" : "blue-gray"}
-                        />
-                      </div>
-                    </td>
                   </tr>
                 );
               },
@@ -1462,7 +1046,7 @@ const AxiosGetRequest = () => {
         </table>
         <div className=""></div>
       </CardBody>
-      <CardFooter className="flex mb-32 items-center justify-between border-t border-blue-gray-50 p-4">
+      <CardFooter className="flex mb-64 items-center justify-between border-t border-blue-gray-50 p-4">
             <div></div>
       </CardFooter>
     </Card>
@@ -1472,7 +1056,7 @@ const AxiosGetRequest = () => {
 
 
 
-          <div className={`flex flex-col items-center col-span-full bg-white shadow-md rounded-xl `}>
+          <div className={`mt-8 flex flex-col items-center col-span-full bg-white shadow-md rounded-xl `}>
                 <div className="flex flex-wrap justify-between">
                   <AboutBiosensorTeam />
                 </div>
