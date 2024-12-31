@@ -21,8 +21,12 @@
     </style>
   </defs>
   <g class="st0">
-    <text class="st1" transform="translate(26.3 11.1)"><tspan x="0" y="0">High Throughput</tspan></text>
-    <text class="st1" transform="translate(26.3 23.1)"><tspan x="0" y="0">Sciences</tspan></text>
+    <g class="st0">
+      <text class="st1" transform="translate(26.3 11.1)"><tspan x="0" y="0">High Throughput</tspan></text>
+    </g>
+    <g class="st0">
+      <text class="st1" transform="translate(26.3 23.1)"><tspan x="0" y="0">Sciences</tspan></text>
+    </g>
   </g>
   <rect class="st2" x="1.8" y="2.6" width="7" height="7"/>
   <rect class="st2" x="8.8" y="9.6" width="7" height="7"/>

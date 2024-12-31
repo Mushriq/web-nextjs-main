@@ -6,8 +6,8 @@ import AboutSectionOne from "@/components/About/AboutSectionOne";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "HTS Instruments Page",
-  description: "This is the Instruments Page for HTS",
+  title: "HTS Team Page",
+  description: "This is the Team Page for HTS",
   // other metadata
 };
 

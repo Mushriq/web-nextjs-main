@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1552 349.2">
+  <!-- Generator: Adobe Illustrator 29.1.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 142)  -->
+  <defs>
+    <style>
+      .st0, .st1, .st2 {
+        isolation: isolate;
+      }
+
+      .st1 {
+        fill: #231f20;
+        font-family: DINCondensed-Bold, 'DIN Condensed';
+        font-size: 160.7px;
+        font-weight: 700;
+      }
+
+      .st2 {
+        fill: #6721b4;
+        opacity: .9;
+      }
+    </style>
+  </defs>
+  <g class="st0">
+    <g class="st0">
+      <text class="st1" transform="translate(329.9 138.4)"><tspan x="0" y="0">High Throughput</tspan></text>
+    </g>
+    <g class="st0">
+      <text class="st1" transform="translate(329.9 299.1)"><tspan x="0" y="0">Sciences</tspan></text>
+    </g>
+  </g>
+  <rect class="st2" x="1.8" y="24.6" width="93.7" height="93.7"/>
+  <rect class="st2" x="95.5" y="118.3" width="93.7" height="93.7"/>
+  <rect class="st2" x="189.3" y="212" width="93.7" height="93.7"/>
+</svg>
