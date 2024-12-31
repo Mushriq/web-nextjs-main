@@ -51,6 +51,7 @@ const AxiosGetRequest = () => {
 
   const [barcodeData, setBarcodeData] = useState([]);
   const [selectedSample, setSelectedSample] = useState(null);
+  const [cellPic, setCellPic] = useState(null);
   const [plot1, setPlot1] = useState(null);
   const [plot2, setPlot2] = useState(null);
   const [plot3, setPlot3] = useState(null);
@@ -58,6 +59,9 @@ const AxiosGetRequest = () => {
   const [plot5, setPlot5] = useState(null);
   const [plot6, setPlot6] = useState(null);
 
+  const cellPic_title = "Sample Image";
+  const cellPic_subtitle = "Representative image taken on first day of imaging";
+  
 
   const plot1_title = "Cell Seeding Histogram";
   const plot1_subtitle = "Distribution at start of experiment. Wells with cells fewer than 3 standard deviations away from the mean are excluded.";
@@ -70,7 +74,7 @@ const AxiosGetRequest = () => {
   const plot5_title = "Log-fold Change over Time";
   const plot5_subtitle = "Each panel is a compound. Values are number of label-free inferred viable cancer cells relative to start of experiment.";
   const plot6_title = "Collapsed Log-fold Change";
-  const plot6_subtitle = "Summary of all drug killing curves using label-free inference. Labels indicate active compounds (log-fold killing activity over 2).";
+  const plot6_subtitle = "Summary of all drug killing curves using label-free inference.";
 
   const table1_title = "Compound Activity";
   const table1_subtitle = "Log2-fold change in the number of viable cancer cells from start of the experiment.";
@@ -79,7 +83,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled", "Status"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
+  const static_url = "http://0.0.0.0:8000" // "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -200,7 +204,7 @@ const AxiosGetRequest = () => {
     // Get new logfc table data
     setTABLE_ROWS(null);
     const logfc_url = `${static_url}/logfctable`;
-    axios.get(logfc_url, { params: { id: selected.imaging_barcode, cutoff: 2 } })
+    axios.get(logfc_url, { params: { id: selected.imaging_barcode, cutoff: 1 } })
       .then(response => {
         const result = JSON.parse(response.data);
         setTABLE_ROWS(result);
@@ -208,6 +212,20 @@ const AxiosGetRequest = () => {
       })
       .catch(error => {
         // console.error("Error:", error);
+      });
+
+    // Get new sample image
+    setPlot1(null);
+    
+    const cellPic_url = `${static_url}/cellpic`;
+    axios.get(cellPic_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
+      .then(response => {
+        const plot_data = URL.createObjectURL(response.data);
+        setCellPic(plot_data);
+      })
+      .catch(error => {
+        // console.error("Error:", error);
+        setCellPic(null);
       });
 
     // Get new plot 1
@@ -343,16 +361,303 @@ const AxiosGetRequest = () => {
   {/* sample report */}
   <main className="grow">
     <div className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-        <div className="mb-2 md:mb-6">
-                    <h1 className={`text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold ${plot1 === null ? "hidden" : "block"}`}>Sample: {selectedSample?.cclf_id}</h1>
+      
+    <div ref={componentRef} className="grid grid-cols-12 gap-4">
+
+
+            {/* Sample Summary */}
+            <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-full lg:row-start-1 lg:row-span-1 bg-white shadow-md rounded-xl ${selectedSample
+                          ? "block"
+                          : "hidden"
+                      }
+                  `}>
+
+              
+<Card className="w-full h-full flex-col lg:flex-row overflow-scroll">
+      <CardHeader
+        shadow={false}
+        floated={false}
+        className="m-0 w-full lg:w-2/5 shrink-0 rounded-r-none"
+      >
+      <img className="py-4 px-4 h-full w-full object-cover" width={4133} height={2362} src={cellPic} />
+      </CardHeader>
+      <CardBody className="w-full">
+        <Typography variant="h4" color="black" className="mb-2 uppercase w-full">
+          Sample: {selectedSample?.sk_id} ({selectedSample?.imaging_barcode})
+        </Typography>
+        <Typography variant="h5" color="gray" className="mb-4 uppercase w-full">
+          Clinical ID: {selectedSample?.clinical_id} ({selectedSample?.age_at_sample_collection}{selectedSample?.sex})
+        </Typography>
+
+        <div className = "size-8 flex flex-row gap-4 mb-8 w-full justify-start">
+          
+          <Image
+                              src="/images/bits/body_site.svg"
+                              alt="Tx"
+                              className="block"
+                              width={32}
+                              height={32}
+                            />
+
+           <div className = "block w-full">{selectedSample?.anatomic_tumor_type}</div>
+          
+
+
+          <Image
+                              src="/images/bits/drug_pill.svg"
+                              alt="Tx"
+                              className="block"
+                              width={32}
+                              height={32}
+                            />
+
+           <div className = "block w-full">{selectedSample?.treatment}</div>
+          
+
         </div>
-    <div ref={componentRef} className="grid grid-cols-12 grid-flow-col gap-4">
+
+        <div className="flex flex-wrap justify-between">
+
+          <div className="block w-1/3">
+          <Typography color="gray" className="mb-0 font-normal w-full uppercase">
+          PD-L1
+        </Typography>
+        <Typography color="gray" className="mb-8 font-small w-full">
+          {selectedSample?.pd_l1}
+        </Typography>
+          </div>
+
+          <div className="block w-1/3">
+          <Typography color="gray" className="mb-0 font-normal w-full uppercase">
+          HER2
+        </Typography>
+        <Typography color="gray" className="mb-8 font-small w-full">
+          {selectedSample?.her2}
+        </Typography>
+          </div>
+
+          <div className="block w-1/3">
+          <Typography color="gray" className="mb-0 font-normal w-full uppercase">
+          MMR
+        </Typography>
+        <Typography color="gray" className="mb-8 font-small w-full">
+          {selectedSample?.mmr}
+        </Typography>
+          </div>
+
+
+
+        </div>
+        <Typography color="gray" className="mb-0 font-normal w-full uppercase">
+          Molecular Notes
+        </Typography>
+        <Typography color="gray" className="mb-8 font-small w-full">
+          {selectedSample?.molecular_notes}
+        </Typography>
+
+        
+        
+
+        <div className = "flex flex-wrap w-full items-center justify-center gap-8">
+
+
+        <div className={`relative size-32 ${selectedSample && selectedSample?.delta_days !== 'NA' ? "block" : "hidden"}`}>
+              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
+                  
+                ${parseInt(selectedSample?.delta_days) == 0
+                  ? "text-light-blue-500" 
+                  : parseInt(selectedSample?.delta_days) == 1
+                ? "text-green-600" 
+                : parseInt(selectedSample?.delta_days) == 2 
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*selectedSample?.delta_days/3} 100`} strokeLinecap="round"></circle>
+              </svg>
+              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
+                <span className={`text-2xl font-bold 
+
+                ${parseInt(selectedSample?.delta_days) == 0
+                  ? "text-light-blue-500" 
+                  : parseInt(selectedSample?.delta_days) == 1
+                ? "text-green-600" 
+                : parseInt(selectedSample?.delta_days) == 2 
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `}>{selectedSample?.delta_days}<span className="text-xs">{selectedSample?.delta_days === "1" ? " day" : " days"}</span></span>
+                <span className={`block text-xs   
+
+                ${parseInt(selectedSample?.delta_days) == 0
+                  ? "text-light-blue-500" 
+                  : parseInt(selectedSample?.delta_days) == 1
+                ? "text-green-600" 
+                : parseInt(selectedSample?.delta_days) == 2 
+                ? "text-amber-600" 
+                : "text-red-600"}
+
+                `}>Since Collection</span>
+              </div>
+            </div>
+
+
+
+        <div className={`relative size-32 ${selectedSample && selectedSample?.post_process_viability_percent !== 'NA' ? "block" : "hidden"}`}>
+              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
+                  
+                ${parseFloat(selectedSample?.post_process_viability_percent) > 97.5
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.post_process_viability_percent) > 90
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.post_process_viability_percent) > 80 
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `} strokeWidth="1.5" strokeDasharray={`${0.5*selectedSample?.post_process_viability_percent} 100`} strokeLinecap="round"></circle>
+              </svg>
+              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
+                <span className={`text-2xl font-bold 
+
+                ${parseFloat(selectedSample?.post_process_viability_percent) > 97.5
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.post_process_viability_percent) > 90
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.post_process_viability_percent) > 80 
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `}>{selectedSample?.post_process_viability_percent}<span className="text-xs">%</span></span>
+                <span className={`block text-xs   
+
+                ${parseFloat(selectedSample?.post_process_viability_percent) > 97.5
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.post_process_viability_percent) > 90
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.post_process_viability_percent) > 80 
+                ? "text-amber-600" 
+                : "text-red-600"}
+
+                `}>Starting Viability</span>
+              </div>
+            </div>
+
+
+            <div className={`relative size-32 ${selectedSample && selectedSample?.post_process_diameter !== 'NA' ? "block" : "hidden"}`}>
+              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
+                  
+                ${parseFloat(selectedSample?.diameter_percentile) > 0.9
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.diameter_percentile) > 0.6
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.diameter_percentile) > 0.4
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*selectedSample?.diameter_percentile} 100`} strokeLinecap="round"></circle>
+              </svg>
+              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
+                <span className={`text-2xl font-bold 
+
+                ${parseFloat(selectedSample?.diameter_percentile) > 0.9
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.diameter_percentile) > 0.6
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.diameter_percentile) > 0.4
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `}>{selectedSample?.post_process_diameter}<span className="text-xs">μm</span></span>
+                <span className={`block text-xs   
+
+                ${parseFloat(selectedSample?.diameter_percentile) > 0.9
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.diameter_percentile) > 0.6
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.diameter_percentile) > 0.4
+                ? "text-amber-600" 
+                : "text-red-600"}
+
+                `}>Average Diameter</span>
+              </div>
+            </div>
+
+
+
+            <div className={`relative size-32 ${selectedSample && selectedSample?.start_tumor_alive_labelled !== 'NA' ? "block" : "hidden"}`}>
+              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
+                  
+                ${parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.4
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*selectedSample?.start_tumor_alive_labelled_percentile} 100`} strokeLinecap="round"></circle>
+              </svg>
+              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
+                <span className={`text-2xl font-bold 
+
+                ${parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.4
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `}>{selectedSample?.start_tumor_alive_labelled}<span className="text-xs">cells</span></span>
+                <span className={`block text-xs   
+
+                ${parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.start_tumor_alive_labelled_percentile) > 0.4
+                ? "text-amber-600" 
+                : "text-red-600"}
+
+                `}>EPCAM+ per Well</span>
+              </div>
+            </div>
+
+
+
+
+        </div>
+        
+        <Typography color="gray" className="mb-0 font-normal w-full uppercase">
+          Raw Sample Processing Comments
+        </Typography>
+        <Typography color="gray" className="mb-8 font-small w-full">
+          {selectedSample?.process_comments}
+        </Typography>
+      </CardBody>
+    </Card>
+
+
+
+
+
+            </div>
+
+           
+
             {/* Plot 1 */}
-            <div  className={`flex flex-col col-span-full figure-animation-appear lg:row-start-1 lg:col-span-4 bg-white shadow-md rounded-xl ${plot1 === null
-                                      ? "hidden"
-                                      : "block"
-                                  }
-                              `}>
+            <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-4 lg:row-start-2 lg:row-span-1 bg-white shadow-md rounded-xl ${plot6 === null
+                          ? "hidden"
+                          : "block"
+                      }
+                  `}>
                                     <div className="px-5 pt-5">
                                       <header className="flex justify-between items-start mb-2">
                                       <div className="text-lg font-semibold text-gray-800">{plot1_title}</div>
@@ -369,7 +674,7 @@ const AxiosGetRequest = () => {
             </div>
 
             {/* Plot 2 */}
-            <div  className={`flex flex-col figure-animation-appear col-span-full lg:row-start-1 lg:col-span-8 bg-white shadow-md rounded-xl ${plot2 === null
+            <div  className={`flex flex-col figure-animation-appear col-span-full lg:row-start-2 lg:col-span-8 bg-white shadow-md rounded-xl ${plot2 === null
                                       ? "hidden"
                                       : "block"
                                   }
@@ -389,7 +694,7 @@ const AxiosGetRequest = () => {
                                     </div>
             </div>
             {/* Plot 3 */}
-            <div className={`flex flex-col figure-animation-appear col-span-full lg:row-start-2 lg:col-span-full bg-white shadow-md rounded-xl ${plot3 === null
+            <div className={`flex flex-col figure-animation-appear col-span-full lg:row-start-3 lg:col-span-full bg-white shadow-md rounded-xl ${plot3 === null
                           ? "hidden"
                           : "block"
                       }
@@ -409,7 +714,7 @@ const AxiosGetRequest = () => {
                         </div>
             </div>
             {/* Plot 4 */}
-            <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-4 lg:row-span-1 lg:row-start-3 bg-white shadow-md rounded-xl ${plot4 === null
+            <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-4 lg:row-span-1 lg:row-start-4 bg-white shadow-md rounded-xl ${plot4 === null
                           ? "hidden"
                           : "block"
                       }
@@ -429,7 +734,7 @@ const AxiosGetRequest = () => {
                         </div>
             </div>
                        {/* Plot 5 */}
-           <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-8 lg:col-start-1 lg:row-span-2 lg:row-start-3 bg-white shadow-md rounded-xl ${plot5 === null
+           <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-8 lg:col-start-1 lg:row-span-2 lg:row-start-4 bg-white shadow-md rounded-xl ${plot5 === null
                           ? "hidden"
                           : "block"
                       }
@@ -449,7 +754,7 @@ const AxiosGetRequest = () => {
                         </div>
             </div>
            {/* Plot 6 */}
-           <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-4 lg:row-start-4 lg:row-span-1 bg-white shadow-md rounded-xl ${plot6 === null
+           <div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-4 lg:row-start-5 lg:row-span-1 bg-white shadow-md rounded-xl ${plot6 === null
                           ? "hidden"
                           : "block"
                       }
@@ -470,10 +775,10 @@ const AxiosGetRequest = () => {
             </div>
 
 
-                                {/* TABLE  see https://blog.logrocket.com/creating-react-sortable-table/ for sorting */}
+     {/* TABLE  see https://blog.logrocket.com/creating-react-sortable-table/ for sorting */}
 
 
-<div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-full lg:row-start-5 bg-white shadow-md rounded-xl ${plot6 === null
+<div className={`flex flex-col figure-animation-appear col-span-full lg:col-span-full lg:row-start-6 bg-white shadow-md rounded-xl ${plot6 === null
                           ? "hidden"
                           : "block"
                       }
