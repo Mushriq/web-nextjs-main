@@ -1,7 +1,6 @@
 "use client"
 import React , { useEffect, useState, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
-
 import AboutBiosensorTeam from './AboutTeam';
 
 
@@ -83,7 +82,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
+  const static_url = "http://0.0.0.0:8000" // "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -460,7 +459,22 @@ const AxiosGetRequest = () => {
 
         <div className = "grid grid-cols-2 md:grid-cols-3 w-full place-items-center items-center justify-center gap-2">
 
-
+        <Tooltip placement="top"       
+          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
+          content={
+        <div className="w-80">
+          <Typography color="blue-gray" className="font-medium">
+            Days Since Collection
+          </Typography>
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="font-normal opacity-80"
+          >
+            The number of days between collection at clinic and start of imaging.
+          </Typography>
+        </div>
+      }>
         <div className={`relative size-32 ${selectedSample && selectedSample?.delta_days !== 'NA' ? "block" : "hidden"}`}>
               <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
@@ -501,9 +515,24 @@ const AxiosGetRequest = () => {
                 `}>Since Collection</span>
               </div>
             </div>
+      </Tooltip>
 
-
-
+      <Tooltip placement="top"       
+          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
+          content={
+        <div className="w-80">
+          <Typography color="blue-gray" className="font-medium">
+            Starting Viability
+          </Typography>
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="font-normal opacity-80"
+          >
+            This is the Countess measurement of viability after all processing steps are done.
+          </Typography>
+        </div>
+      }>
         <div className={`relative size-32 ${selectedSample && selectedSample?.post_process_viability_percent !== 'NA' ? "block" : "hidden"}`}>
               <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
@@ -544,8 +573,24 @@ const AxiosGetRequest = () => {
                 `}>Starting Viability</span>
               </div>
             </div>
+          </Tooltip>
 
-
+          <Tooltip placement="top"       
+          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
+          content={
+        <div className="w-80">
+          <Typography color="blue-gray" className="font-medium">
+            Average Cell Diameter
+          </Typography>
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="font-normal opacity-80"
+          >
+            Average cell size of viable cells only. Line indicates percentile rank among all experiments.
+          </Typography>
+        </div>
+      }>
             <div className={`relative size-32 ${selectedSample && selectedSample?.post_process_diameter !== 'NA' ? "block" : "hidden"}`}>
               <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
@@ -584,11 +629,30 @@ const AxiosGetRequest = () => {
                 : "text-red-600"}
 
                 `}>Average Diameter</span>
+                        
+
+
               </div>
             </div>
+          </Tooltip>
 
 
-
+          <Tooltip placement="top"       
+          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
+          content={
+        <div className="w-80">
+          <Typography color="blue-gray" className="font-medium">
+            Starting EPCAM+ Cells
+          </Typography>
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="font-normal opacity-80"
+          >
+            The median per-well EPCAM+ TMRM+ total cell count (from 6 fields of view per well) from live staining. We use the 4-hour timepoint to allow TMRM time to activate. Line indicates percentile rank among all experiments.
+          </Typography>
+        </div>
+      }>
             <div className={`relative size-32 ${selectedSample && selectedSample?.start_tumor_alive_labelled !== 'NA' ? "block" : "hidden"}`}>
               <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
@@ -629,8 +693,25 @@ const AxiosGetRequest = () => {
                 `}>EPCAM+ per Well</span>
               </div>
             </div>
+        </Tooltip>
 
 
+        <Tooltip placement="top"       
+          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
+          content={
+        <div className="w-80">
+          <Typography color="blue-gray" className="font-medium">
+            Controls Separation
+          </Typography>
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="font-normal opacity-80"
+          >
+            This is the difference between the log-fold changes seen for Bortezomib and DMSO at the final timepoint. Line indicates percentile rank among all experiments.<span className="italic">This is a placeholder until we batch-calculate z-prime as a metric of screen quality.</span> 
+          </Typography>
+        </div>
+      }>
             <div className={`relative size-32 ${selectedSample && selectedSample?.control_delta_logfc_labelled !== 'NA' ? "block" : "hidden"}`}>
               <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
@@ -671,10 +752,28 @@ const AxiosGetRequest = () => {
                 `}>Controls Separation</span>
               </div>
             </div>
+        </Tooltip>
 
 
 
 
+
+        <Tooltip placement="top"       
+          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
+          content={
+        <div className="w-80">
+          <Typography color="blue-gray" className="font-medium">
+            Prediction Correlation
+          </Typography>
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="font-normal opacity-80"
+          >
+            The pearson correlation between inferred label-free and fluorescence-based count of viable cancer cells per well in stained wells only at 24 hours. We use the 24-hour timepoint as fluorescence signal drops in some samples beyond ~30 hours.
+          </Typography>
+        </div>
+      }>
             <div className={`relative size-32 ${selectedSample && selectedSample?.correlation !== 'NA' ? "block" : "hidden"}`}>
               <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
@@ -715,6 +814,7 @@ const AxiosGetRequest = () => {
                 `}>Prediction Correlation</span>
               </div>
             </div>
+        </Tooltip>
 
 
         </div>
