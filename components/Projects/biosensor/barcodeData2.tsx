@@ -80,10 +80,10 @@ const AxiosGetRequest = () => {
   const table1_subtitle = "Log2-fold change in the number of viable cancer cells from start of the experiment.";
   const table1_subsubtitle = "Showing the final timepoint. Numbers in parentheses are number of detected or inferred viable cancer cells. LogFC calculation adds a pseudocount of 1 cell. Active compounds are those with label-free inferred log-fold killing activity of over 2.";
   
-  const TABLE_HEAD = ["Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled", "Status"];
+  const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "http://0.0.0.0:8000" // "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
+  const static_url = "https://hts-biosensor-plumber-353269782212.us-central1.run.app";
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -377,7 +377,7 @@ const AxiosGetRequest = () => {
       <CardHeader
         shadow={false}
         floated={false}
-        className="m-0 w-full lg:w-2/5 shrink-0 rounded-r-none"
+        className="m-0 w-full lg:w-1/2 shrink-0 rounded-r-none"
       >
       <img className="py-4 px-4 h-full w-full object-cover" width={4133} height={2362} src={cellPic} />
       </CardHeader>
@@ -458,7 +458,7 @@ const AxiosGetRequest = () => {
         
         
 
-        <div className = "flex flex-wrap w-full items-center justify-center gap-8">
+        <div className = "grid grid-cols-2 md:grid-cols-3 w-full place-items-center items-center justify-center gap-2">
 
 
         <div className={`relative size-32 ${selectedSample && selectedSample?.delta_days !== 'NA' ? "block" : "hidden"}`}>
@@ -631,12 +631,96 @@ const AxiosGetRequest = () => {
             </div>
 
 
+            <div className={`relative size-32 ${selectedSample && selectedSample?.control_delta_logfc_labelled !== 'NA' ? "block" : "hidden"}`}>
+              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
+                  
+                ${parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.25
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*selectedSample?.control_delta_logfc_labelled_percentile} 100`} strokeLinecap="round"></circle>
+              </svg>
+              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
+                <span className={`text-2xl font-bold 
+
+                ${parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.25
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `}>{selectedSample?.control_delta_logfc_labelled}<span className="text-xs">lfc</span></span>
+                <span className={`block text-xs   
+
+                ${parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.control_delta_logfc_labelled_percentile) > 0.25
+                ? "text-amber-600" 
+                : "text-red-600"}
+
+                `}>Controls Separation</span>
+              </div>
+            </div>
+
+
+
+
+            <div className={`relative size-32 ${selectedSample && selectedSample?.correlation !== 'NA' ? "block" : "hidden"}`}>
+              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
+                  
+                ${parseFloat(selectedSample?.correlation) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.correlation) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.correlation) > 0.25
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*(selectedSample?.correlation < 0 ? 0 : selectedSample?.correlation)} 100`} strokeLinecap="round"></circle>
+              </svg>
+              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
+                <span className={`text-2xl font-bold 
+
+                ${parseFloat(selectedSample?.correlation) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.correlation) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.correlation) > 0.25
+                ? "text-amber-600" 
+                : "text-red-600"}
+                
+                `}>{selectedSample?.correlation}</span>
+                <span className={`block text-xs   
+
+                ${parseFloat(selectedSample?.correlation) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.correlation) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.correlation) > 0.25
+                ? "text-amber-600" 
+                : "text-red-600"}
+
+                `}>Prediction Correlation</span>
+              </div>
+            </div>
 
 
         </div>
         
         <Typography color="gray" className="mb-0 font-normal w-full uppercase">
-          Raw Sample Processing Comments
+          Sample Comments
         </Typography>
         <Typography color="gray" className="mb-8 font-small w-full">
           {selectedSample?.process_comments}
@@ -843,6 +927,16 @@ const AxiosGetRequest = () => {
  
                 return (
                   <tr key={index}>
+                     <td className={classes}>
+                      <div className="w-max">
+                        <Chip
+                          variant="ghost"
+                          size="sm"
+                          value={status}
+                          color={status === "active" ? "green" : status === "reference" ? "blue" : "blue-gray"}
+                        />
+                      </div>
+                    </td>
                     <td className={classes}>
                       <Typography
                         variant="small"
@@ -914,16 +1008,6 @@ const AxiosGetRequest = () => {
                           >
                             {"("}{start_alive_unlabelled}{" to "}{n_tumor_alive_unlabelled}{")"}
                           </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="w-max">
-                        <Chip
-                          variant="ghost"
-                          size="sm"
-                          value={status}
-                          color={status === "active" ? "green" : status === "reference" ? "blue" : "blue-gray"}
-                        />
                       </div>
                     </td>
                   </tr>
