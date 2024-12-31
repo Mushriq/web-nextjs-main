@@ -18,13 +18,6 @@ const AboutBiosensorTeam = () => {
                 className="flex flex-wrap gap-6 figure-animation-appear mx-auto lg:mr-0"
               >
                 <img
-                  src="/images/projects/biosensor/boehmlab.png"
-                  alt="Boehm Lab"
-                  width={90}
-                  height={30}
-                  className="block drop-shadow-xl mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
-                />
-                <img
                   src="/images/projects/biosensor/kilogo.svg"
                   alt="Koch Institute"
                   width={180}
@@ -48,7 +41,7 @@ const AboutBiosensorTeam = () => {
             <img
                   src="/images/projects/biosensor/mghlogo.svg"
                   alt="MGH"
-                  width={190}
+                  width={240}
                   height={30}
                   className="block drop-shadow-xl mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />
