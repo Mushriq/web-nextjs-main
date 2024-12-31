@@ -378,6 +378,74 @@ const ReportSummaryCard = ({ selectedSample, cellPic, print = false }) => {
         </Tooltip>
 
 
+
+        <Tooltip placement="top"       
+          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
+          content={
+        <div className="w-80">
+          <Typography color="blue-gray" className="font-medium">
+            Prediction Correlation
+          </Typography>
+          <Typography
+            variant="small"
+            color="blue-gray"
+            className="font-normal opacity-80"
+          >
+            The pearson correlation between inferred label-free and fluorescence-based count of viable cancer cells per well in stained wells only at 24 hours. We use the 24-hour timepoint as fluorescence signal drops in some samples beyond ~30 hours.
+          </Typography>
+        </div>
+      }>
+            <div className={`relative size-32 `}>
+              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
+                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
+                 
+                 ${selectedSample?.correlation !== 'NA' ? "block" : "hidden"}
+                
+                ${parseFloat(selectedSample?.correlation) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.correlation) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.correlation) > 0.25
+                ? "text-amber-600" 
+                : selectedSample?.correlation !== 'NA' 
+                ? "text-red-600"
+                : "text-gray-600"}
+                
+                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*(selectedSample?.correlation < 0 ? 0 : selectedSample?.correlation)} 100`} strokeLinecap="round"></circle>
+              </svg>
+              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
+                <span className={`text-2xl font-bold 
+
+                ${parseFloat(selectedSample?.correlation) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.correlation) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.correlation) > 0.25
+                ? "text-amber-600" 
+                : selectedSample?.correlation !== 'NA' 
+                ? "text-red-600"
+                : "text-gray-600"}
+                
+                `}>{selectedSample?.correlation}</span>
+                <span className={`block text-xs   
+
+                ${parseFloat(selectedSample?.correlation) > 0.75
+                  ? "text-light-blue-500" 
+                  : parseFloat(selectedSample?.correlation) > 0.5
+                ? "text-green-600" 
+                : parseFloat(selectedSample?.correlation) > 0.25
+                ? "text-amber-600" 
+                : selectedSample?.correlation !== 'NA' 
+                ? "text-red-600"
+                : "text-gray-600"}
+
+                `}>Prediction Correlation</span>
+              </div>
+            </div>
+        </Tooltip>
+
+
         <Tooltip placement="top"       
           className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
           content={
@@ -445,74 +513,6 @@ const ReportSummaryCard = ({ selectedSample, cellPic, print = false }) => {
         </Tooltip>
 
 
-
-
-
-        <Tooltip placement="top"       
-          className="border border-blue-gray-50 bg-white px-4 py-3 shadow-xl shadow-black/10"
-          content={
-        <div className="w-80">
-          <Typography color="blue-gray" className="font-medium">
-            Prediction Correlation
-          </Typography>
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-normal opacity-80"
-          >
-            The pearson correlation between inferred label-free and fluorescence-based count of viable cancer cells per well in stained wells only at 24 hours. We use the 24-hour timepoint as fluorescence signal drops in some samples beyond ~30 hours.
-          </Typography>
-        </div>
-      }>
-            <div className={`relative size-32 `}>
-              <svg className="rotate-180 size-full" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current text-gray-200`} strokeWidth="1" strokeDasharray={`50 100`} strokeLinecap="round"></circle>
-                <circle cx="18" cy="18" r="16" fill="none" className={`stroke-current 
-                 
-                 ${selectedSample?.correlation !== 'NA' ? "block" : "hidden"}
-                
-                ${parseFloat(selectedSample?.correlation) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.correlation) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.correlation) > 0.25
-                ? "text-amber-600" 
-                : selectedSample?.correlation !== 'NA' 
-                ? "text-red-600"
-                : "text-gray-600"}
-                
-                `} strokeWidth="1.5" strokeDasharray={`${0.5*100*(selectedSample?.correlation < 0 ? 0 : selectedSample?.correlation)} 100`} strokeLinecap="round"></circle>
-              </svg>
-              <div className="absolute top-9 start-1/2 transform -translate-x-1/2 -translate-y-1/5 text-center">
-                <span className={`text-2xl font-bold 
-
-                ${parseFloat(selectedSample?.correlation) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.correlation) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.correlation) > 0.25
-                ? "text-amber-600" 
-                : selectedSample?.correlation !== 'NA' 
-                ? "text-red-600"
-                : "text-gray-600"}
-                
-                `}>{selectedSample?.correlation}</span>
-                <span className={`block text-xs   
-
-                ${parseFloat(selectedSample?.correlation) > 0.75
-                  ? "text-light-blue-500" 
-                  : parseFloat(selectedSample?.correlation) > 0.5
-                ? "text-green-600" 
-                : parseFloat(selectedSample?.correlation) > 0.25
-                ? "text-amber-600" 
-                : selectedSample?.correlation !== 'NA' 
-                ? "text-red-600"
-                : "text-gray-600"}
-
-                `}>Prediction Correlation</span>
-              </div>
-            </div>
-        </Tooltip>
 
 
         </div>
