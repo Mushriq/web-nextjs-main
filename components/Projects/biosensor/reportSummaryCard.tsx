@@ -383,7 +383,7 @@ const ReportSummaryCard = ({ selectedSample, cellPic, print = false }) => {
           content={
         <div className="w-80">
           <Typography color="blue-gray" className="font-medium">
-            Z' Factor
+            Z&apos; Factor
           </Typography>
           <Typography
             variant="small"
@@ -439,7 +439,7 @@ const ReportSummaryCard = ({ selectedSample, cellPic, print = false }) => {
                 ? "text-red-600"
                 : "text-gray-600"}
 
-                `}>Z' Factor</span>
+                `}>Z&apos; Factor</span>
               </div>
             </div>
         </Tooltip>
