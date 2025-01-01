@@ -1,5 +1,8 @@
 import { Metadata } from "next";
+import { useState } from "react";
+import axios from 'axios';
 import SectionTitle from "@/components/Common/SectionTitle";
+import StaticTestPage from "@/components/Test/StaticTestPage";
 
 export const metadata: Metadata = {
   title: "High Throughput Sciences",
@@ -9,9 +12,7 @@ export const metadata: Metadata = {
 
 export default async function TestPage({ params }) {
 
-  const { id } = await params
-
-  
+  const { selectedBarcodeId } = await params;
 
 
   return (
@@ -23,7 +24,7 @@ export default async function TestPage({ params }) {
             <div className="-mx-4 flex flex-wrap items-center justify-center">
               <div className="w-full section-animation px-4">
                 <div className="flex flex-wrap items-center justify-start w-full">
-                  <SectionTitle title="Hello" paragraph={`this is id ${id}`} />
+                  <StaticTestPage selectedBarcodeId={selectedBarcodeId} />
                 </div>
               </div>
             </div>
