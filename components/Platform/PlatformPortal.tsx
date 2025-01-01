@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const Instrument2 = () => {
+const PlatformPortal = () => {
   return (
     <section className="py-16 md:py-20 lg:py-28">
       <div className="container">
@@ -61,4 +61,4 @@ const Instrument2 = () => {
   );
 };
 
-export default Instrument2;
+export default PlatformPortal;

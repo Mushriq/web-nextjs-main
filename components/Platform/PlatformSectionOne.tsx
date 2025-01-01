@@ -9,7 +9,7 @@ const checkIcon = (
 
 
 
-const Instrument1 = () => {
+const PlatformSectionOne = () => {
   const List = ({ text }) => (
     <p className="mb-5 flex items-center text-lg font-medium text-body-color">
       <span className="mr-4 flex h-[30px] w-[30px] items-center justify-center rounded-md bg-primary bg-opacity-10 text-primary">
@@ -24,49 +24,30 @@ const Instrument1 = () => {
       <div className="container">
         <div className="border-b border-body-color/[.15] pb-16 dark:border-white/[.15] md:pb-20 lg:pb-28">
           <div className="-mx-4 flex flex-wrap items-center">
-            <div className="w-full px-4 lg:w-1/2">
+            <div className="w-full px-4 section-animation lg:w-1/2">
               <SectionTitle
-                title="HTS provides a platform for impactful data-driven discovery."
-                paragraph="Integrated robotic systems with advanced liquid handling, multi-modal plate readouts and high-content imaging streamline combinatorial screens and generate next-generation datasets for machine learning-driven discoveries."
+                title="A platform for impactful data-driven discovery."
+                paragraph="Solving complex biomedical questions takes more than just collecting more data—it requires automated systems that produce consistent, high-quality results and tools that empower all researchers to extract meaningful insights. Given the breadth of biomedical research, we often need custom solutions and infrastructure for unique samples, readouts, and analyses."
                 mb="40px"
               />
-
-              <div
-                className="wow fadeInUp mb-12 max-w-[570px] lg:mb-0"
-                data-wow-delay=".15s"
-              >
-                <div className="mx-[-12px] flex flex-wrap">
-                  <div className="w-full px-3 sm:w-1/2 lg:w-full xl:w-1/2">
-                    <List text="Premium quality" />
-                    <List text="Tailwind CSS" />
-                    <List text="Use for lifetime" />
-                  </div>
-
-                  <div className="w-full px-3 sm:w-1/2 lg:w-full xl:w-1/2">
-                    <List text="Next.js" />
-                    <List text="Rich documentation" />
-                    <List text="Developer friendly" />
-                  </div>
-                </div>
-              </div>
             </div>
 
             <div className="w-full px-4 lg:w-1/2">
               <div
-                className="wow fadeInUp relative mx-auto aspect-[25/24] max-w-[500px] lg:mr-0"
+                className="relative figure-animation-right mx-auto aspect-[25/24] max-w-[500px] lg:mr-0"
                 data-wow-delay=".2s"
               >
                 <Image
-                  src="/images/about/about-image.svg"
+                  src="/images/about/about-robotics.png"
                   alt="about-image"
                   fill
-                  className="drop-shadow-three mx-auto max-w-full dark:hidden dark:drop-shadow-none lg:mr-0"
+                  className="drop-shadow-three mx-auto rounded-2xl max-w-full dark:hidden dark:drop-shadow-none lg:mr-0"
                 />
                 <Image
-                  src="/images/about/about-image-dark.svg"
+                  src="/images/about/about-robotics.png"
                   alt="about-image"
                   fill
-                  className="drop-shadow-three mx-auto hidden max-w-full dark:block dark:drop-shadow-none lg:mr-0"
+                  className="drop-shadow-three mx-auto rounded-2xl hidden max-w-full dark:block dark:drop-shadow-none lg:mr-0"
                 />
               </div>
             </div>
@@ -77,4 +58,4 @@ const Instrument1 = () => {
   );
 };
 
-export default Instrument1;
+export default PlatformSectionOne;

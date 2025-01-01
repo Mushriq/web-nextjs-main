@@ -1,14 +1,11 @@
-import AboutSectionOne from "@/components/About/AboutSectionOne";
-import AboutSectionTwo from "@/components/About/AboutSectionTwo";
-import Breadcrumb from "@/components/Common/Breadcrumb";
-import Instrument1 from "@/components/Platform/Instrument1";
-import Instrument2 from "@/components/Platform/Instrument2";
+import PlatformSectionOne from "@/components/Platform/PlatformSectionOne";
+import PlatformPortal from "@/components/Platform/PlatformPortal";
 
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "HTS Instruments Page",
-  description: "This is the Instruments Page for HTS",
+  title: "Platform | High Throughput Sciences",
+  description: "This is the Platform Page for HTS",
   // other metadata
 };
 
@@ -19,9 +16,11 @@ const PlatformPage = () => {
         pageName="Instruments Page"
         description="This is the Instruments Page for HTS"
       /> */}
-      <div style={{ marginBottom: "20px" }}></div>
-      <Instrument1 />
-      <Instrument2 />
+      <div className="mt-10">
+            <PlatformSectionOne />
+      </div>
+
+      <PlatformPortal />
     </>
   );
 };
