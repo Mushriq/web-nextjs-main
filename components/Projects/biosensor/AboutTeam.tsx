@@ -40,7 +40,7 @@ const AboutBiosensorTeam = () => {
             <img
                   src="/images/projects/biosensor/mghlogo.svg"
                   alt="MGH"
-                  width={240}
+                  width={300}
                   height={30}
                   className="block drop-shadow-xl mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
                 />

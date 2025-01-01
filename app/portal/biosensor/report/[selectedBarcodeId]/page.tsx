@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { useState } from "react";
 import axios from 'axios';
 import SectionTitle from "@/components/Common/SectionTitle";
-import StaticTestPage from "@/components/Test/StaticTestPage";
+import DirectReportPage from "@/components/Projects/biosensor/DirectReportPage";
 
 export const metadata: Metadata = {
   title: "High Throughput Sciences",
@@ -24,7 +24,7 @@ export default async function TestPage({ params }) {
             <div className="-mx-4 flex flex-wrap items-center justify-center">
               <div className="w-full section-animation px-4">
                 <div className="flex flex-wrap items-center justify-start w-full">
-                  <StaticTestPage selectedBarcodeId={selectedBarcodeId} />
+                  <DirectReportPage selectedBarcodeId={selectedBarcodeId} />
                 </div>
               </div>
             </div>
