@@ -738,21 +738,14 @@ const AxiosGetRequest = () => {
  <main className="grow printContent">
     <div ref={componentRef} className="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto z-0">
         <div className="grid grid-cols-12 gap-2 mb-2 items-center">
-                                      <div className="col-span-7 text-lg font-semibold text-gray-800">Experiment: {selectedSample?.imaging_barcode}</div>
+                                      <div className="col-span-9 text-lg font-semibold text-gray-800">Experiment: {selectedSample?.imaging_barcode}</div>
                                       <div className="col-span-3 justify-self-end text-lg font-semibold text-gray-800"><img
                                             src="/images/projects/biosensor/ascitespredict-logo.png"
                                             alt="AscitesPredict"
                                             width={200}
-                                            height={30}
-                                            className="block w-[120px] z-50"
+                                            height={48}
+                                            className="block w-[200px] z-50"
                                           /></div>                                      
-                                          <div className="col-span-2 justify-self-end text-lg font-semibold text-gray-800"><img
-                                          src="/images/logo/logo-3.png"
-                                          alt="HTS"
-                                          width={100}
-                                          height={15}
-                                          className="block w-[120px] z-50"
-                                        /></div>
 
          </div>
 
