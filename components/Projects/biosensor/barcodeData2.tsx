@@ -119,7 +119,7 @@ const AxiosGetRequest = () => {
 
   useEffect( () => {
 
-    const url =  `${static_url}/list`;// "https://jsonplaceholder.typicode.com/users" //
+    const url =  `${static_url}/list`;
 
     const fetchData = async () => {
 
@@ -217,7 +217,7 @@ const AxiosGetRequest = () => {
       });
 
     // Get new sample image
-    setPlot1(null);
+    setCellPic(null);
     
     const cellPic_url = `${static_url}/cellpic`;
     axios.get(cellPic_url, {responseType: 'blob', params: { id: selected.imaging_barcode}})
