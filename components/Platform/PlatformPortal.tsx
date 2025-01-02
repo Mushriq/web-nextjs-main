@@ -11,7 +11,7 @@ const PlatformPortal = () => {
               data-wow-delay=".15s"
             >
               <Image
-                src="/images/about/data_portal.svg"
+                src="/images/about/data-portal-minimal.svg"
                 alt="about image"
                 fill
                 className="drop-shadow-three dark:hidden dark:drop-shadow-none"
