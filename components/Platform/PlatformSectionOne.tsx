@@ -27,7 +27,7 @@ const PlatformSectionOne = () => {
             <div className="w-full px-4 section-animation lg:w-1/2">
               <SectionTitle
                 title="A platform for impactful data-driven discovery."
-                paragraph="Solving complex biomedical questions takes more than just collecting more data—it requires automated systems that produce consistent, high-quality results and tools that empower all researchers to extract meaningful insights. Given the breadth of biomedical research, we often need custom solutions and infrastructure for unique samples, readouts, and analyses."
+                paragraph="Solving complex biomedical questions takes more than just collecting more data—it requires innovative assays, novel study systems, and automated processes that produce consistent, high-quality results. Given the breadth of biomedical research, we often need custom solutions and infrastructure for unique samples, readouts, and analyses. We aim to democratize data production and analysis so we empower all researchers to extract meaningful insights."
                 mb="40px"
               />
             </div>
