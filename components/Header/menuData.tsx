@@ -49,6 +49,14 @@ const menuData: Menu[] = [
         paragraph: "A label-free imaging platform with AI for rapid primary cancer screening",
         newTab: false,
       },
+      {
+        id: 32,
+        icon: squareIcon,
+        title: "Nominating and explaining targets",
+        path: "/research/nemo",
+        paragraph: "Explainable machine learning and screening of personalized therapeutic hypotheses at scale.",
+        newTab: false,
+      },
     ],
   },
   {
