@@ -10,7 +10,7 @@ const Features = () => {
           <div className="mb-8 md:mb-16">
           <SectionTitle
             title="A platform for impactful data-driven discovery."
-            paragraph="Solving complex biomedical questions takes more than just collecting more data—it requires innovative assays, novel study systems, and automated processes that produce consistent, high-quality results. Given the breadth of biomedical research, we often need custom solutions and infrastructure for unique samples, readouts, and analyses. We aim to democratize data production and analysis so we empower all researchers to extract meaningful insights."
+            paragraph="Solving complex biomedical questions takes more than just collecting more data—it requires innovative assays, novel study systems, and automated processes that produce consistent, high-quality results. Given the breadth of biomedical research, we often need custom solutions and infrastructure for unique samples, readouts, and analyses. At HTS, we aim to democratize data production and analysis so we empower all researchers to extract meaningful insights."
             center
             width="1000px"
           />
