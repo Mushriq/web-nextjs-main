@@ -351,7 +351,7 @@ const AxiosGetRequest = () => {
 
     </Button>
 
-    <a target="_blank" href={`/portal/biosensor/report/${selectedSample?.imaging_barcode}`}>
+    <a target="_blank" rel="noreferrer" href={`/portal/biosensor/report/${selectedSample?.imaging_barcode}`}>
     <Button className={`bg-black text-white dark:bg-white dark:text-black 
                             ${plot1 === null
                                       ? "hidden"
