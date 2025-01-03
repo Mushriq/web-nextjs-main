@@ -80,7 +80,7 @@ const AxiosGetRequest = () => {
 
   const table1_title = "Compound Activity";
   const table1_subtitle = "Log2-fold change in the number of viable cancer cells from start of the experiment.";
-  const table1_subsubtitle = "Showing the final timepoint. Numbers in parentheses are number of detected or inferred viable cancer cells. LogFC calculation adds a pseudocount of 1 cell. Active compounds are those with label-free inferred log-fold killing activity of over 2.";
+  const table1_subsubtitle = "Showing the final timepoint. Numbers in parentheses are number of detected or inferred viable cancer cells. LogFC calculation adds a pseudocount of 1 cell. Active compounds are those with label-free inferred log-fold killing activity of over 1.";
   
   const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
