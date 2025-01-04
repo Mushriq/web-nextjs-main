@@ -357,9 +357,13 @@ const AxiosGetRequest = () => {
             <Select label="Select Experiment"
                 onChange = {handleUserChange} >
                   {  barcodeData.map(barcode => (
-                  <Option className="w-4/5" key = {barcode.imaging_barcode}  
+                  <Option className="w-full" key = {barcode.imaging_barcode}  
                           value = {barcode.imaging_barcode}>
-                            {barcode.imaging_barcode}</Option> 
+                            <div className="flex flex-row">
+                            <img  className={`h-5 w-5 rounded-full ${barcode.qc_technical === "Pass" && barcode.qc_tumorcontent === "Pass" ? "opacity-[1.0]" : "opacity-[0.0]"} `} src="/images/bits/check-circle-1.svg" alt="set"/>
+                            <span className="in-line block px-3">{barcode.imaging_barcode}</span>
+                            </div>
+                            </Option> 
 
 
                   ) )
