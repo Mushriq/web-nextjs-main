@@ -46,7 +46,7 @@ const menuData: Menu[] = [
         icon: squareIcon,
         title: "Rapid ex vivo high-content screens",
         path: "/research/biosensor",
-        paragraph: "A label-free imaging platform with AI for rapid primary cancer screening",
+        paragraph: "A label-free imaging platform with AI for rapidly screening compounds in primary cells.",
         newTab: false,
       },
       {
@@ -57,6 +57,22 @@ const menuData: Menu[] = [
         paragraph: "Explainable machine learning and screening of personalized therapeutic hypotheses at scale.",
         newTab: false,
       },
+      {
+        id: 33,
+        icon: squareIcon,
+        title: "Expanded variant evaluator",
+        path: "/research/eve",
+        paragraph: "Screening for variant enrichment across conditions by multiplexed sequencing.",
+        newTab: false,
+      },
+      {
+        id: 34,
+        icon: squareIcon,
+        title: "Whole transcriptomes with allelic information",
+        path: "/research/walle",
+        paragraph: "Genotype-aware single-cell RNA sequencing.",
+        newTab: false,
+      }
     ],
   },
   {
