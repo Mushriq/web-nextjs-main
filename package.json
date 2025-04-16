@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.0",
+    "@headlessui/react": "^2.2.1",
     "@heroicons/react": "^2.2.0",
     "@material-tailwind/react": "^2.1.10",
     "axios": "^1.7.9",
@@ -27,11 +27,13 @@
     "react-modal-video": "^2.0.0",
     "react-plotly.js": "^2.6.0",
     "react-to-print": "^3.0.4",
+    "react-use-mounted": "^2.0.0",
     "webpack": "^5.97.1"
   },
   "devDependencies": {
     "@types/node": "^20.8.9",
     "@types/react": "18.2.19",
+    "@types/react-plotly.js": "^2.6.3",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",
     "prettier": "^3.0.3",

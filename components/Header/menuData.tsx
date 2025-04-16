@@ -69,7 +69,7 @@ const menuData: Menu[] = [
         id: 34,
         icon: squareIcon,
         title: "Whole transcriptomes with allelic information",
-        path: "/research/walle",
+        path: "/research/scinteract",
         paragraph: "Genotype-aware single-cell RNA sequencing.",
         newTab: false,
       }
