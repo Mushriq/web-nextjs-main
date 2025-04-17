@@ -12,7 +12,7 @@ const AboutSCInteractTeam = () => {
             <p>Mushriq Al-Jazrawe, PhD (MIT)</p>
             <p>Candace Haddox, MD (DFCI)</p>
             <p>David Shulman, PhD (DFCI)</p>
-            <p>Joelle Straehla, PhD (Seattle Children's)</p>
+            <p>Joelle Straehla, PhD (Seattle Children&apos;s)</p>
           </div>
           <div
                 className="flex flex-wrap gap-6 figure-animation-appear mx-auto lg:mr-0"
@@ -35,7 +35,7 @@ const AboutSCInteractTeam = () => {
 
 <img
                   src="/images/logo/seattle.png"
-                  alt="Seattle Children's Research Institute"
+                  alt="Seattle Children&apos;s Research Institute"
                   width={300}
                   height={30}
                   className="block drop-shadow-xl mx-auto max-w-full dark:drop-shadow-none lg:mr-0"

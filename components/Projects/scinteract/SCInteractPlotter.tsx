@@ -249,13 +249,17 @@ const AxiosGetRequest = () => {
 
 
   const [loading, setLoading] = useState(true);
-
   const [loadingUMAP, setLoadingUMAP] = useState(true);
   const [loadingHeatmap, setLoadingHeatmap] = useState(true);
-  
+  const [loadingVolcano, setLoadingVolcano] = useState(true);
 
   const [error, setError] = useState<string | null>(null); // const [error, setError] = useState(null);
   const [heatmapData, setHeatmapData] = useState<any>(null);
+  const [volcanoData, setVolcanoData] = useState<any>(null);
+
+
+  const [volcanoGroupOptions, setVolcanoGroupOptions] = useState<string[]>([]);
+  const [volcanoSelectedGroup, setVolcanoSelectedGroup] = useState<string>("");
 
 
   const fetchDifferentialExpression = async (selectedCells: string[]) => {
@@ -274,6 +278,26 @@ const AxiosGetRequest = () => {
       console.error("Error fetching DE genes:", err);
     } finally {
       setLoadingHeatmap(false);
+    }
+  };
+
+  const fetchVolcano = async (selectedCells: string[]) => {
+    setLoadingVolcano(true);
+
+    try {
+      const volcano_response = await axios.post(`${static_url}/volcano`, {
+        cell_ids: selectedCells,
+        groupby: groupby,
+        group: volcanoSelectedGroup
+      });
+  
+      // Handle the response (e.g., show in table or plot)
+      setVolcanoData(volcano_response.data);
+
+    } catch (err) {
+      console.error("Error fetching Volcano data:", err);
+    } finally {
+      setLoadingVolcano(false);
     }
   };
 
@@ -365,8 +389,20 @@ const AxiosGetRequest = () => {
     <div style={{ padding: '2rem' }}>
       <h1>Interactive UMAP Viewer</h1>
 
-      <div>
+<div>
   <label>Group by:</label>
+  <div className="mt-2 w-[500px]">
+  <ColorByCombobox
+      geneOptions={meta.groupby_options}
+      value={groupby}
+      onChange={val => {
+        setGroupby(val);
+        setColorType("metadata"); // Default colorType to metadata
+        setColor(val); // Default color to match groupby
+      }}
+    />
+    </div>
+  {/* 
   <select
     value={groupby}
     onChange={e => {
@@ -380,7 +416,23 @@ const AxiosGetRequest = () => {
       <option key={opt} value={opt}>{opt}</option>
     ))}
   </select>
+  */}
 </div>
+
+{/* 
+<div>
+  <label>Volcano Plot Selected Group:</label>
+  <select
+    value={volcanoSelectedGroup}
+    onChange={(e) => setVolcanoSelectedGroup(e.target.value)}
+  >
+          {(meta.group_values[groupby] || []).map(val => (
+            <option key={val} value={val}>{val}</option>
+          ))}
+  </select>
+</div>
+*/}
+
 
 <div>
   <label>Color by:</label>
@@ -488,7 +540,6 @@ const AxiosGetRequest = () => {
     </div>
 
 
-  {heatmapData && (
     <div className="mt-10">
       <h2 className="font-bold text-lg mb-4">Expression Heatmap</h2>
       {loadingHeatmap ? (
@@ -515,7 +566,7 @@ const AxiosGetRequest = () => {
       />
     )}
     </div>
-  )}
+
 
 
     </div>
