@@ -19,10 +19,10 @@ const AboutSCInteractProject = () => {
           <div className="-mx-4 flex flex-wrap items-center">
             <div className="w-full section-animation px-4 lg:w-1/2">
               <SectionTitle
-                title="Single-cell exploration of gene expression and genotypes"
-                paragraph="Abstract coming soon."
-                mb="0px"
-                width="800px"
+              title="Single-cell exploration of gene expression and genotypes"
+              paragraph="Desmoid tumors comprise neoplastic and non-neoplastic cells, but how their cellular composition and interactions influence clinical behavior remains unclear. We are applying integrated single-nucleus and single-cell RNA sequencing with targeted genotyping of CTNNB1 and APC mutations to resolve tumor identity at single-cell resolution. Using biobanked desmoid tumor specimens, we are characterizing transcriptional profiles of genetically defined tumor and non-tumor cells. By linking these molecular profiles to clinical trajectories, we aim to identify gene expression programs associated with spontaneous regression and tumor-specific biology. Understanding these programs may reveal mechanisms that can be leveraged to induce regression in aggressive cases, and help identify patients who could be spared unnecessary or intensive therapy."
+              mb="0px"
+              width="800px"
               />
             </div>
 
