@@ -248,10 +248,10 @@ const AxiosGetRequest = () => {
   });
 
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const [loadingUMAP, setLoadingUMAP] = useState(false);
-  const [loadingHeatmap, setLoadingHeatmap] = useState(false);
+  const [loadingUMAP, setLoadingUMAP] = useState(true);
+  const [loadingHeatmap, setLoadingHeatmap] = useState(true);
   
 
   const [error, setError] = useState<string | null>(null); // const [error, setError] = useState(null);
