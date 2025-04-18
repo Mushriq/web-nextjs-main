@@ -222,7 +222,7 @@ const AxiosGetRequest = () => {
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
   const static_url = "https://scinteract-api-353269782212.us-central1.run.app" 
-  
+
   // For Printing
   const componentRef = React.useRef(null);
 
@@ -266,7 +266,7 @@ const AxiosGetRequest = () => {
     setLoadingHeatmap(true);
 
     try {
-      const heatmap_response = await axios.post(`${static_url}/heatmap`, {
+      const heatmap_response = await axios.post(`${static_url}/heatmap1`, {
         cell_ids: selectedCells,
         groupby: groupby
       });
