@@ -10,9 +10,9 @@ const AboutSCInteractTeam = () => {
           <div className="py-4">
             <h3 className="text-xl font-bold text-black dark:text-white">Principal Investigators</h3>
             <p>Mushriq Al-Jazrawe, PhD (MIT)</p>
-            <p>Joelle Straehla, PhD (Seattle Children&apos;s)</p>
+            <p>Joelle Straehla, MD PhD (Seattle Children&apos;s)</p>
             <p>Candace Haddox, MD (DFCI)</p>
-            <p>David Shulman, PhD (DFCI)</p>
+            <p>David Shulman, MD (DFCI)</p>
             <p>Aaron Thorner, PhD (DFCI)</p>
           </div>
           <div
