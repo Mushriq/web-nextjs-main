@@ -28,6 +28,7 @@
     "react-plotly.js": "^2.6.0",
     "react-to-print": "^3.0.4",
     "react-use-mounted": "^2.0.0",
+    "uuid": "^11.1.0",
     "webpack": "^5.97.1"
   },
   "devDependencies": {

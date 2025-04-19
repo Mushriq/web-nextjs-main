@@ -17,6 +17,9 @@ import dynamic from 'next/dynamic';
 import { useTheme } from "next-themes";
 
 import axios from 'axios';
+import { v4 as uuidv4 } from 'uuid'; 
+
+
 import { Select, Option } from "@material-tailwind/react";
 import Image from 'next/image'
 import Link from "next/link";
@@ -221,7 +224,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "https://scinteract-api-353269782212.us-central1.run.app" 
+  const static_url =  "https://scinteract-353269782212.us-central1.run.app/" 
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -261,23 +264,63 @@ const AxiosGetRequest = () => {
   const [volcanoGroupOptions, setVolcanoGroupOptions] = useState<string[]>([]);
   const [volcanoSelectedGroup, setVolcanoSelectedGroup] = useState<string>("");
 
+  const controllerRef = useRef<AbortController | null>(null);
+  const latestTokenRef = useRef<string | null>(null);
 
   const fetchDifferentialExpression = async (selectedCells: string[]) => {
+
+    // Cancel the previous request if it's still ongoing
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+
+    // Create a new controller for this request
+    const controller = new AbortController();
+    controllerRef.current = controller;
+
+    const requestToken = uuidv4(); // Generate a unique ID
+    latestTokenRef.current = requestToken;
+
     setLoadingHeatmap(true);
 
     try {
-      const heatmap_response = await axios.post(`${static_url}/heatmap1`, {
+      const heatmap_response = await axios.post(`${static_url}/heatmap1`, 
+      {
         cell_ids: selectedCells,
-        groupby: groupby
-      });
+        groupby: groupby,
+        request_id: requestToken,
+      },
+      {
+        signal: controller.signal // Pass the signal to axios
+      }
+    );
   
+      // Check if this is the most recent request
+      if (requestToken !== latestTokenRef.current) {
+        console.log("Stale request from client ignored");
+        return;
+      }
+
+      // Check if this is the most recent request
+      if (heatmap_response.data.request_id !== latestTokenRef.current) {
+        console.log("Stale response from server ignored");
+        return;
+      }
+
       // Handle the response (e.g., show in table or plot)
       setHeatmapData(heatmap_response.data);
 
     } catch (err) {
-      console.error("Error fetching DE genes:", err);
+      if (axios.isCancel(err) || err.name === "AbortError") {
+        console.log("Previous request aborted");
+      } else {
+        console.error("Error fetching DE genes:", err);
+      }
     } finally {
-      setLoadingHeatmap(false);
+      if (requestToken === latestTokenRef.current) {
+        controllerRef.current = null; // Clean up controller
+        setLoadingHeatmap(false); // Only stop spinner if this is the latest
+      }
     }
   };
 
