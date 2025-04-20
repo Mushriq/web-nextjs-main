@@ -6,6 +6,21 @@ import {
   ComboboxOptions,
   ComboboxButton
 } from '@headlessui/react'
+import Slider, { SliderThumb, SliderValueLabelProps } from '@mui/material/Slider';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import {
+  Autocomplete,
+  TextField,
+  Switch,
+  Typography,
+  Box,
+  Divider
+} from "@mui/material";
+
 import React , { useEffect, useState, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import AboutSCInteractTeam from './AboutTeam';
@@ -37,7 +52,6 @@ import {
   Card,
   CardHeader,
   Input,
-  Typography,
   Button,
   CardBody,
   Chip,
@@ -111,6 +125,7 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
       fetchGenes();
     }, [query, page, geneOptions]);
   
+
     return (
       <div className="relative w-full">
         <Combobox value={value} onChange={onChange} nullable onClose={() => setQuery('')}>
@@ -167,17 +182,164 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
       </div>
     );
   }
+
+  const FilterByPanel = ({
+    metadataOptions,
+    filterBy,
+    setFilterBy,
+    setFilterType,
+    discreteValues,
+    setDiscreteValues,
+    numericRange,
+    setNumericRange,
+    plotReDraw,
+    setPlotReDraw
+  }: {
+    metadataOptions: any;
+    filterBy: string | null;
+    setFilterBy: (val: string | null) => void;
+    setFilterType: (val: string | null) => void;
+    discreteValues: Record<string, boolean>;
+    setDiscreteValues: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+    numericRange: number[];
+    setNumericRange: (val: number[]) => void;
+    plotReDraw: boolean;
+    setPlotReDraw: React.Dispatch<React.SetStateAction<boolean>>;
+  }) => {
+    useEffect(() => {
+      if (!filterBy || !metadataOptions) return;
   
+      if (metadataOptions.discrete_categories.hasOwnProperty(filterBy)) {
+        const initialState: Record<string, boolean> = {};
+        metadataOptions.discrete_categories[filterBy].forEach((val: string) => {
+          initialState[val] = true;
+        });
+        setDiscreteValues(initialState);
+        setFilterType("discrete");
+
+      }
+  
+      if (metadataOptions.numeric_categories.hasOwnProperty(filterBy)) {
+        const range = metadataOptions.numeric_categories[filterBy];
+        setNumericRange([range.min, range.max]);
+        setFilterType("numeric");
+      }
+    }, [filterBy, metadataOptions]);
+  
+    const isDiscrete = filterBy && metadataOptions.discrete_categories.hasOwnProperty(filterBy);
+    const isNumeric = filterBy && metadataOptions.numeric_categories.hasOwnProperty(filterBy);
+  
+    const handleReset = () => {
+      if (!filterBy || !metadataOptions) return;
+  
+      if (isDiscrete) {
+        const resetDiscrete: Record<string, boolean> = {};
+        metadataOptions.discrete_categories[filterBy].forEach((val: string) => {
+          resetDiscrete[val] = true;
+        });
+        setFilterType("discrete");
+        setDiscreteValues(resetDiscrete);
+      }
+  
+      if (isNumeric) {
+        const range = metadataOptions.numeric_categories[filterBy];
+        setFilterType("numeric");
+        setNumericRange([range.min, range.max]);
+      }
+
+      setFilterBy(null);
+      setFilterType("discrete");
+
+      setPlotReDraw(true);
 
 
+    };
+    
+    return (
+      <Box > {/* sx={{ p: 2 }} */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <ColorByCombobox
+            geneOptions={metadataOptions.groupby_options}
+            value={filterBy}
+            onChange={(val) => setFilterBy(val)}
+          />
+          {(isDiscrete || isNumeric) && (<Box>
+                    <Button variant="outlined" onClick={handleReset}>Reset</Button>
+                  </Box>)}
+        </Box>
+  
+        {isDiscrete && (
+          <Box mt={2}>
+            <Typography variant="subtitle1">Select Groups</Typography>
+            {Object.entries(discreteValues).map(([value, checked]) => (
+              <FormControlLabel
+                key={value}
+                control={
+                  <Switch
+                    color = "secondary"
+                    checked={checked}
+                    onChange={() =>
+                      setDiscreteValues((prev) => ({
+                        ...prev,
+                        [value]: !prev[value],
+                      }))
+                    }
+                  />
+                }
+                label={value}
+              />
+            ))}
+          </Box>
+        )}
+  
+        {isNumeric && (
+          <Box mt={2}>
+            <Typography variant="subtitle1">Select Range</Typography>
+            <Slider
+              color = "secondary"
+              value={numericRange}
+              onChange={(e, newVal) => setNumericRange(newVal as number[])}
+              valueLabelDisplay="auto"
+              min={metadataOptions.numeric_categories[filterBy].min}
+              max={metadataOptions.numeric_categories[filterBy].max}
+            />
+          </Box>
+        )}
+
+      </Box>
+    );
+  };
+  
 const AxiosGetRequest = () => {
 
   const { theme, resolvedTheme } = useTheme();
 
+  // Group By
   const [groupby, setGroupby] = useState('');
   const [groups, setGroups] = useState([]);
+
+  // Filter By
+  const [filterBy, setFilterBy] = useState<string | null>(null);
+  const [filterType, setFilterType] = useState("discrete");
+  const [discreteValues, setDiscreteValues] = useState<Record<string, boolean>>({});
+  const [numericRange, setNumericRange] = useState<number[]>([0, 1]);
+
+  const [plotReDraw, setPlotReDraw] = useState(false);
+
+
+  const [plotReady, setPlotReady] = useState(false);
+  const [plotReadyData, setPlotReadyData] = useState<any[]>([]);
+  const [selectionMade, setSelectionMade] = useState(false);
+  const [plotKey, setPlotKey] = useState(0);
+  const plotRef = useRef<any>(null);
+
+
+  // Color By
   const [color, setColor] = useState('');
-  const [colorType, setColorType] = useState<'metadata' | 'gene'>('metadata');
+  const [colorType, setColorType] = React.useState('metadata');
+
+  const [dotSize, setDotSize] = useState(6);
+  const [viewport, setViewport] = useState({});
 
   const [plotHtml, setPlotHtml] = useState('');
   const [plotData, setPlotData] = useState<any | null>(null);
@@ -186,36 +348,13 @@ const AxiosGetRequest = () => {
   const [meta, setMeta] = useState({
     groupby_options: [],
     gene_options: [],
+    discrete_categories: {},
+    numeric_categories: {},
     group_values: {}
   });
 
 
-  const [barcodeData, setBarcodeData] = useState([]);
   const [selectedSample, setSelectedSample] = useState(null);
-  const [cellPic, setCellPic] = useState(null);
-  const [plot1, setPlot1] = useState(null);
-  const [plot2, setPlot2] = useState(null);
-  const [plot3, setPlot3] = useState(null);
-  const [plot4, setPlot4] = useState(null);
-  const [plot5, setPlot5] = useState(null);
-  const [plot6, setPlot6] = useState(null);
-
-  const cellPic_title = "Sample Image";
-  const cellPic_subtitle = "Representative image taken on first day of imaging";
-  
-
-  const plot1_title = "Cell Seeding Histogram";
-  const plot1_subtitle = "Distribution at start of experiment. Wells with cells fewer than 3 standard deviations away from the mean are excluded.";
-  const plot2_title = "Plate Cell Count Heatmap";
-  const plot2_subtitle = "Each panel is a timepoint. X marks any excluded wells. Plate edges are excluded automatically.";
-  const plot3_title = "Fluorescence-based Count of Cell Types over Time";
-  const plot3_subtitle = "Each panel is a compound. Solid bars indicate viable cell counts. Shaded bars are non-viable cells.";
-  const plot4_title = "Inference Correlation";
-  const plot4_subtitle = "Correlation between label-free prediction and fluorescence-based annotation per well, per timepoint.";
-  const plot5_title = "Log-fold Change over Time";
-  const plot5_subtitle = "Each panel is a compound. Values are number of label-free inferred viable cancer cells relative to start of experiment.";
-  const plot6_title = "Collapsed Log-fold Change";
-  const plot6_subtitle = "Summary of all drug killing curves using label-free inference.";
 
   const table1_title = "Compound Activity";
   const table1_subtitle = "Log2-fold change in the number of viable cancer cells from start of the experiment.";
@@ -224,7 +363,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url =  "https://scinteract-353269782212.us-central1.run.app/" 
+  const static_url = "http://127.0.0.1:8000" //  "https://scinteract-353269782212.us-central1.run.app/" 
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -256,9 +395,12 @@ const AxiosGetRequest = () => {
   const [loadingHeatmap, setLoadingHeatmap] = useState(true);
   const [loadingVolcano, setLoadingVolcano] = useState(true);
 
+ 
   const [error, setError] = useState<string | null>(null); // const [error, setError] = useState(null);
   const [heatmapData, setHeatmapData] = useState<any>(null);
   const [volcanoData, setVolcanoData] = useState<any>(null);
+
+  const [adjustedData, setAdjustedData] = useState([]);
 
 
   const [volcanoGroupOptions, setVolcanoGroupOptions] = useState<string[]>([]);
@@ -362,7 +504,7 @@ const AxiosGetRequest = () => {
         setGroupby(result.data.groupby_options[0] || '');
         setColor(result.data.groupby_options[0] || '');
 
-        
+        setFilterBy(null); // reset the filter when changing the data
 
       } catch (err) {
 
@@ -383,16 +525,51 @@ const AxiosGetRequest = () => {
 
   }, []);
 
-  useEffect(() => {
-    if (!loading && groupby && color) {
-      fetchPlot();
+  // Encapsulate shared logic
+  const runPlotPipeline = () => {
+    const calledReset = plotReDraw; // grab whether this was a reset call before turning it off
+    setPlotReDraw(false);
+
+    fetchPlot();
+
+    if (calledReset) {
+      fetchDifferentialExpression([]);
+    } else if (plotData?.data) {
+      const allCellIds = plotData.data.flatMap((trace: any) =>
+        trace.customdata?.map((d: any) => d[0]) || []
+      );
+      fetchDifferentialExpression(allCellIds);
+    } else {
       fetchDifferentialExpression([]);
     }
-  }, [loading, groupby, color]); // Refresh the plots when either groupby or color changes
+
+    setDotSize(1);
+    const timeouts = [
+      setTimeout(() => setDotSize(5), 1000),
+    ];
+
+    return () => timeouts.forEach(clearTimeout); // cleanup
+  };
+
+  useEffect(() => {
+    if (!loading && groupby && color) {
+      const cleanup = runPlotPipeline();
+      return cleanup;
+    }
+  }, [loading, groupby, color]);
+
+  useEffect(() => {
+    if (plotReDraw) {
+      const cleanup = runPlotPipeline();
+      return cleanup;
+    }
+  }, [plotReDraw]);
+
 
 
 
   const fetchPlot = async () => {
+
     setLoadingUMAP(true);
 
     const params = new URLSearchParams({
@@ -400,9 +577,33 @@ const AxiosGetRequest = () => {
       groups: groups.join(','),
       color
     });
+
+    // Add filters if present
+    if (filterBy && filterType) {
+      params.append('filter_by', filterBy);
+      params.append('filter_type', filterType);
+  
+      if (filterType === "discrete") {
+        const selected = Object.entries(discreteValues)
+          .filter(([_, selected]) => selected)
+          .map(([value]) => value);
+        params.append('filter_values', selected.join(','));
+      }
+  
+      if (filterType === "numeric" && numericRange.length === 2) {
+        params.append('filter_min', numericRange[0].toString());
+        params.append('filter_max', numericRange[1].toString());
+      }
+    }
+
     try {
+      //const response = await fetch(`${static_url}/plot_umap?${params}`);
+      //const data = await response.json();
+      //setPlotData(data);
+
       const res = await axios.get(`${static_url}/plot_umap?${params}`);
       setPlotData(JSON.parse(res.data));
+
     } catch (err) {
       console.error(err);
       setError(err.message || 'Unknown error');
@@ -413,9 +614,58 @@ const AxiosGetRequest = () => {
     if (error) return <div className="text-red-600">Error: {error}</div>;
     if (!plotData) return <div>Loading...</div>;
 
-
   };
 
+
+
+  useEffect(() => {
+    if (plotData?.data && plotData?.layout && dotSize > 0) {
+
+      const updated = plotData.data.map((trace: any) => ({
+        ...trace,
+        marker: {
+          ...trace.marker,
+          size: dotSize,
+        },
+      }));
+      setPlotReadyData(updated);
+
+      setTimeout(() => {
+        setPlotReady(true);
+      }, 1); // small async delay to let DOM stabilize
+
+      setPlotKey(prev => prev + 1);
+
+    }
+  }, [plotData, dotSize]);
+
+
+  useEffect(() => {
+    if (plotData?.data) {
+      const allCellIds = plotData.data.flatMap((trace: any) =>
+        trace.customdata?.map((d: any) => d[0]) || []
+      );
+      fetchDifferentialExpression(allCellIds);
+    }
+  }, [plotData]);
+
+
+  useEffect(() => {
+    if (plotRef.current?.el) {
+      window.Plotly.Plots.resize(plotRef.current.el);
+    }
+  }, [plotData, dotSize]);
+
+  useEffect(() => {
+    if (plotReadyData?.length) {
+      setDotSize(1); // start small
+      const timeouts = [
+        setTimeout(() => setDotSize(5), 1000),
+      ];
+  
+      return () => timeouts.forEach(clearTimeout); // cleanup if component unmounts
+    }
+  }, [plotData]);
 
   if (loading){
 
@@ -428,13 +678,48 @@ const AxiosGetRequest = () => {
 
   }
 
+
+
   return (
     <div style={{ padding: '2rem' }}>
       <h1>Interactive UMAP Viewer</h1>
 
-<div>
-  <label>Group by:</label>
-  <div className="mt-2 w-[500px]">
+  <div className="mt-4 w-[500px]"> 
+  <label className="block font-medium mb-1">Filter By:</label>
+  {meta && (
+    <div>
+
+      <FilterByPanel
+        metadataOptions={meta}
+        filterBy={filterBy}
+        setFilterBy={setFilterBy}
+        setFilterType={setFilterType}
+        discreteValues={discreteValues}
+        setDiscreteValues={setDiscreteValues}
+        numericRange={numericRange}
+        setNumericRange={setNumericRange}
+        plotReDraw={plotReDraw}
+        setPlotReDraw={setPlotReDraw}
+      />
+
+      <div className="mb-4">
+          <Button onClick={runPlotPipeline} style={{ marginTop: '1rem' }}>
+          Apply Filter
+          </Button>
+      </div>
+
+      <Divider variant = "middle" className="my-6" />
+
+    </div>
+
+
+  )}
+
+</div>
+
+<div className="mt-4 w-[500px]">
+      <label className="block font-medium mb-1">Group By:</label>
+  <div className="mt-2 mb-4 w-[500px]">
   <ColorByCombobox
       geneOptions={meta.groupby_options}
       value={groupby}
@@ -445,22 +730,10 @@ const AxiosGetRequest = () => {
       }}
     />
     </div>
-  {/* 
-  <select
-    value={groupby}
-    onChange={e => {
-      const selectedGroupby = e.target.value;
-      setGroupby(selectedGroupby);
-      setColorType("metadata"); // Default colorType to metadata
-      setColor(selectedGroupby); // Default color to match groupby
-    }}
-  >
-    {meta.groupby_options.map(opt => (
-      <option key={opt} value={opt}>{opt}</option>
-    ))}
-  </select>
-  */}
+
+    <Divider variant = "middle" className="my-6" />
 </div>
+
 
 {/* 
 <div>
@@ -477,66 +750,80 @@ const AxiosGetRequest = () => {
 */}
 
 
-<div>
-  <label>Color by:</label>
-  
+<div className="mt-4 w-[500px]">
+
   <div>
-    <label>
-      <input
-        type="radio"
-        name="colorType"
-        value="metadata"
-        checked={colorType === "metadata"}
-        onChange={() => {
-          setColorType("metadata");
-          setColor(groupby); // default to groupby if switching to metadata
+  <FormControl>
+  <label className="block font-medium mb-1">Color By:</label>
+      <RadioGroup
+        row
+        aria-labelledby="color-by-radio-buttons-group"
+        name="color-by-radio-buttons-group"
+        value={colorType}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          const selectedValue = (event.target as HTMLInputElement).value;
+          setColorType(selectedValue);
+          if (selectedValue === "gene") {
+            setColor(meta.gene_options[0] || ""); // default to first gene
+          }
+          if (selectedValue === "metadata") {
+            setColor(groupby); // default to groupby category
+          }
         }}
-      />
-      Metadata
-    </label>
+      >
+        <FormControlLabel value="metadata" control={<Radio color="secondary" />} label="Metadata" />
+        <FormControlLabel value="gene" control={<Radio color="secondary" />} label="Gene" />
+      </RadioGroup>
+    </FormControl>
 
-    <label style={{ marginLeft: "1rem" }}>
-      <input
-        type="radio"
-        name="colorType"
-        value="gene"
-        checked={colorType === "gene"}
-        onChange={() => {
-          setColorType("gene");
-          setColor(meta.gene_options[0] || ""); // default to first gene
-        }}
-      />
-      Gene
-    </label>
-  </div>
-
-  <div className="mt-2 w-[500px]">
+    <div className="mt-4 mb-4 w-[500px]">
     <ColorByCombobox
       geneOptions={colorType === "metadata" ? meta.groupby_options : meta.gene_options}
       value={color}
       onChange={(val) => setColor(val)}
     />
+    </div>
+    <Divider variant = "middle" className="my-6" />
   </div>
+
+
+
+
+
+  <div className="mt-4 w-[500px]">
+  <label className="block font-medium mb-1">UMAP Dot Size</label>
+  <Slider
+    aria-label = "Dot Size"
+    defaultValue={6}
+    color={"secondary"}
+    min={1}
+    max={10}
+    valueLabelDisplay="auto"
+    value={dotSize}
+    onChange={(e, val) => setDotSize(val)}
+    className="w-full"
+  />
+</div>
+
+
+
 
 
 
 </div>
 
-
-      <button onClick={fetchPlot} style={{ marginTop: '1rem' }}>
-        Refresh Plot
-      </button>
+<Divider variant = "middle" className="my-6" />
 
 
     <div className="p-4">
       <h2 className="font-bold text-lg mb-4">UMAP Plot</h2>
-      {loadingUMAP ? (
+      {loading || loadingUMAP || !plotReady ? (
 
         <LoadingIndicator message = "Preparing UMAP plot ..." />
 
       ) : (
-      <Plot
-        data={plotData?.data}
+        <Plot
+        data={plotReadyData}
         layout={{
           ...plotData?.layout,
           dragmode: 'select',
@@ -568,13 +855,18 @@ const AxiosGetRequest = () => {
             if (event?.points?.length) {
               const selectedCellIds = event.points.map((pt: any) => pt.customdata?.[0]);
               fetchDifferentialExpression(selectedCellIds);
-            } 
+            }
         }}
         onDeselect={() => {
 
-          fetchDifferentialExpression([]);
+          const allCellIds = plotData.data.flatMap((trace: any) =>
+            trace.customdata?.map((d: any) => d[0]) || []
+          );
+          fetchDifferentialExpression(allCellIds);
+
 
         }}
+
 
 
 
