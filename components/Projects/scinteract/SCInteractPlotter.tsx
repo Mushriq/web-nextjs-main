@@ -41,6 +41,7 @@ import Link from "next/link";
 
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
 import { getTopMarkers } from "@/components/utils/markers.js";
+import NLQueryInput from '@/components/ui/NLQueryInput';
 
 import {
   MagnifyingGlassIcon,
@@ -80,6 +81,44 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
   </svg>
   );
 
+
+  function NaturalLanguageViz({ static_url }) {
+    const [input, setInput] = useState("Show me UMAP colored by CD8A")
+    const [params, setParams] = useState(null)
+  
+    const get_params = new URLSearchParams({
+      query: input,
+    });
+
+
+    const handleRun = async () => {
+      const res = await axios.get(`${static_url}/parse?${get_params}`);
+      setParams(JSON.parse(res.data));
+      // TODO: Now send to your main visualization endpoint with response.data
+
+
+    }
+  
+    return (
+      <div className="space-y-4">
+        <input
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          placeholder="Ask a question like: show CD8A grouped by cell type"
+          className="border p-2 rounded w-full"
+        />
+        <button onClick={handleRun} className="bg-blue-600 text-white px-4 py-2 rounded">
+          Parse Query
+        </button>
+  
+        {params && (
+          <pre className="bg-gray-100 p-2 rounded text-sm">
+            {JSON.stringify(params, null, 2)}
+          </pre>
+        )}
+      </div>
+    )
+  }
 
   function ColorByCombobox({ geneOptions, value, onChange }) {
     const { theme, resolvedTheme } = useTheme();
@@ -374,7 +413,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "https://scinteract-353269782212.us-central1.run.app/" 
+  const static_url = "http://127.0.0.1:8000"  // "https://scinteract-353269782212.us-central1.run.app/" 
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -423,6 +462,35 @@ const AxiosGetRequest = () => {
 
   const controllerRef = useRef<AbortController | null>(null);
   const latestTokenRef = useRef<string | null>(null);
+
+
+  const handleNaturalLanguageQuery = async (input: string) => {
+    try {
+
+      const get_params = new URLSearchParams({
+        query: input,
+      });
+      
+      const response = await axios.get(`${static_url}/parse?${get_params}`);
+      const parsedResponse = JSON.parse(response.data);
+  
+      const { group_by, color_by } = response.data;
+  
+      console.log("🧠 Parsed response:", response.data);
+  
+      if (group_by) {
+        setGroupby(group_by);
+      }
+  
+      if (color_by) {
+        setColor(color_by);
+      }
+  
+    } catch (error) {
+      console.error("Error parsing natural language query:", error);
+    }
+  };
+
 
   const fetchDifferentialExpression = async (selectedCells: string[]) => {
 
@@ -776,136 +844,166 @@ const AxiosGetRequest = () => {
   // const umapTitle = `Showing UMAP of ${totalCells} cells grouped by ${groupby} and colored by ${color}`;
 
   return (
+
+    
     <div style={{ padding: '2rem' }}>
       <h1>Interactive UMAP Viewer</h1>
 
-  <div className="mt-4 w-[500px]"> 
-  <label className="block font-medium mb-1">Filter By:</label>
-  {meta && (
-    <div>
+{/* TOP PANEL */}
+<div className="grid grid-flow-col grid-cols-2 grid-rows-3 gap-4">
 
-      <FilterByPanel
-        metadataOptions={meta}
-        filterBy={filterBy}
-        setFilterBy={setFilterBy}
-        setFilterType={setFilterType}
-        discreteValues={discreteValues}
-        setDiscreteValues={setDiscreteValues}
-        numericRange={numericRange}
-        setNumericRange={setNumericRange}
-        plotReDraw={plotReDraw}
-        setPlotReDraw={setPlotReDraw}
-      />
 
-      <div className="mb-4">
-          <Button onClick={runPlotPipeline} style={{ marginTop: '1rem' }}>
-          Apply Filter
-          </Button>
+
+  <div className="row-span-3">Control Panel
+
+      <div className="mt-4 w-[500px]"> 
+        <label className="block font-medium mb-1">Filter By:</label>
+        {meta && (
+          <div>
+
+            <FilterByPanel
+              metadataOptions={meta}
+              filterBy={filterBy}
+              setFilterBy={setFilterBy}
+              setFilterType={setFilterType}
+              discreteValues={discreteValues}
+              setDiscreteValues={setDiscreteValues}
+              numericRange={numericRange}
+              setNumericRange={setNumericRange}
+              plotReDraw={plotReDraw}
+              setPlotReDraw={setPlotReDraw}
+            />
+
+            <div className="mb-4">
+                <Button onClick={runPlotPipeline} style={{ marginTop: '1rem' }}>
+                Apply Filter
+                </Button>
+            </div>
+
+            <Divider variant = "middle" className="my-6" />
+
+          </div>
+
+
+          )}
+
       </div>
 
-      <Divider variant = "middle" className="my-6" />
-
-    </div>
 
 
-  )}
+      <div className="mt-4 w-[500px]">
+          <label className="block font-medium mb-1">Group By:</label>
+      <div className="mt-2 mb-4 w-[500px]">
+      <ColorByCombobox
+          geneOptions={meta.groupby_options}
+          value={groupby}
+          onChange={val => {
+            setGroupby(val);
+            setColorType("metadata"); // Default colorType to metadata
+            setColor(val); // Default color to match groupby
+          }}
+        />
+        </div>
 
-</div>
-
-<div className="mt-4 w-[500px]">
-      <label className="block font-medium mb-1">Group By:</label>
-  <div className="mt-2 mb-4 w-[500px]">
-  <ColorByCombobox
-      geneOptions={meta.groupby_options}
-      value={groupby}
-      onChange={val => {
-        setGroupby(val);
-        setColorType("metadata"); // Default colorType to metadata
-        setColor(val); // Default color to match groupby
-      }}
-    />
-    </div>
-
-    <Divider variant = "middle" className="my-6" />
-</div>
+        <Divider variant = "middle" className="my-6" />
+      </div>
 
 
-{/* 
-<div>
-  <label>Volcano Plot Selected Group:</label>
-  <select
-    value={volcanoSelectedGroup}
-    onChange={(e) => setVolcanoSelectedGroup(e.target.value)}
-  >
-          {(meta.group_values[groupby] || []).map(val => (
-            <option key={val} value={val}>{val}</option>
-          ))}
-  </select>
-</div>
-*/}
 
 
-<div className="mt-4 w-[500px]">
 
-  <div>
-  <FormControl>
-  <label className="block font-medium mb-1">Color By:</label>
-      <RadioGroup
-        row
-        aria-labelledby="color-by-radio-buttons-group"
-        name="color-by-radio-buttons-group"
-        value={colorType}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          const selectedValue = (event.target as HTMLInputElement).value;
-          setColorType(selectedValue);
-          if (selectedValue === "gene") {
-            setColor(meta.gene_options[0] || ""); // default to first gene
-          }
-          if (selectedValue === "metadata") {
-            setColor(groupby); // default to groupby category
-          }
-        }}
-      >
-        <FormControlLabel value="metadata" control={<Radio color="secondary" />} label="Metadata" />
-        <FormControlLabel value="gene" control={<Radio color="secondary" />} label="Gene" />
-      </RadioGroup>
-    </FormControl>
+      <div className="mt-4 w-[500px]">
 
-    <div className="mt-4 mb-4 w-[500px]">
-    <ColorByCombobox
-      geneOptions={colorType === "metadata" ? meta.groupby_options : meta.gene_options}
-      value={color}
-      onChange={(val) => setColor(val)}
-    />
-    </div>
-    <Divider variant = "middle" className="my-6" />
+        <div>
+        <FormControl>
+        <label className="block font-medium mb-1">Color By:</label>
+            <RadioGroup
+              row
+              aria-labelledby="color-by-radio-buttons-group"
+              name="color-by-radio-buttons-group"
+              value={colorType}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                const selectedValue = (event.target as HTMLInputElement).value;
+                setColorType(selectedValue);
+                if (selectedValue === "gene") {
+                  setColor(meta.gene_options[0] || ""); // default to first gene
+                }
+                if (selectedValue === "metadata") {
+                  setColor(groupby); // default to groupby category
+                }
+              }}
+            >
+              <FormControlLabel value="metadata" control={<Radio color="secondary" />} label="Metadata" />
+              <FormControlLabel value="gene" control={<Radio color="secondary" />} label="Gene" />
+            </RadioGroup>
+          </FormControl>
+
+          <div className="mt-4 mb-4 w-[500px]">
+          <ColorByCombobox
+            geneOptions={colorType === "metadata" ? meta.groupby_options : meta.gene_options}
+            value={color}
+            onChange={(val) => setColor(val)}
+          />
+          </div>
+          <Divider variant = "middle" className="my-6" />
+        </div>
+
+
+
+
+
+        <div className="mt-4 w-[500px]">
+        <label className="block font-medium mb-1">UMAP Dot Size</label>
+        <Slider
+          aria-label = "Dot Size"
+          defaultValue={6}
+          color={"secondary"}
+          min={1}
+          max={10}
+          valueLabelDisplay="auto"
+          value={dotSize}
+          onChange={(e, val) => setDotSize(val)}
+          className="w-full"
+        />
+        </div>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
   </div>
 
 
 
 
 
-  <div className="mt-4 w-[500px]">
-  <label className="block font-medium mb-1">UMAP Dot Size</label>
-  <Slider
-    aria-label = "Dot Size"
-    defaultValue={6}
-    color={"secondary"}
-    min={1}
-    max={10}
-    valueLabelDisplay="auto"
-    value={dotSize}
-    onChange={(e, val) => setDotSize(val)}
-    className="w-full"
-  />
-</div>
-
-
-
-
+  <div className="row-span-3">
+    <NLQueryInput 
+        setGroupby={setGroupby}
+        setColor={setColor}
+        setFilterBy={setFilterBy}
+        parseApiUrl={`${static_url}/parse`}
+      />
+  </div>
 
 
 </div>
+{/* END OF TOP PANEL */}
+
+
+<div>
+
+
+</div>
+
 
 <Divider variant = "middle" className="my-6" />
 
@@ -1229,6 +1327,7 @@ const AxiosGetRequest = () => {
   </div>
   )}
 </div>
+
 
 
     </div>
