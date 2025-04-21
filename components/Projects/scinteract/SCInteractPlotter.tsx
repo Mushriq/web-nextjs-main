@@ -267,7 +267,7 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
             onChange={(val) => setFilterBy(val)}
           />
           {(isDiscrete || isNumeric) && (<Box>
-                    <Button variant="outlined" onClick={handleReset}>Reset</Button>
+                    <Button onClick={handleReset}>Reset</Button>
                   </Box>)}
         </Box>
   
