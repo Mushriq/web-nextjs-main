@@ -413,7 +413,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "https://scinteract-353269782212.us-central1.run.app/" 
+  const static_url = "https://scinteract-353269782212.us-central1.run.app/"  // "http://localhost:8000" // 
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -990,7 +990,10 @@ const AxiosGetRequest = () => {
         setGroupby={setGroupby}
         setColor={setColor}
         setFilterBy={setFilterBy}
+        setColorType={setColorType}
         parseApiUrl={`${static_url}/parse`}
+        metadataOptions={meta.groupby_options}
+        geneList={meta.gene_options}
       />
   </div>
 
