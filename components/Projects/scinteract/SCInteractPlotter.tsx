@@ -40,6 +40,7 @@ import Image from 'next/image'
 import Link from "next/link";
 
 import LoadingIndicator from '@/components/ui/LoadingIndicator';
+import { getTopMarkers } from "@/components/utils/markers.js";
 
 import {
   MagnifyingGlassIcon,
@@ -65,6 +66,7 @@ import {
 } from "@material-tailwind/react";
 import ThemeToggler from '@/components/Header/ThemeToggler';
 
+import Papa from 'papaparse';
 
 
 const mapIcon = (<svg width="25" height="25" viewBox="0 0 25 25" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -77,7 +79,6 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
   <path d="M5.91623 4.96229C6.31475 4.25385 7.0644 3.81543 7.87725 3.81543H16.1228C16.9356 3.81543 17.6852 4.25385 18.0838 4.96229L20.461 9.18826C20.6505 9.52506 20.75 9.90497 20.75 10.2914V19.0646C20.75 20.3072 19.7426 21.3146 18.5 21.3146H5.5C4.25736 21.3146 3.25 20.3072 3.25 19.0646V10.2914C3.25 9.90497 3.34952 9.52506 3.53898 9.18826L5.91623 4.96229ZM11.25 9.14853V5.31543H7.87725C7.6063 5.31543 7.35641 5.46157 7.22357 5.69772L5.28238 9.14853H11.25ZM4.75 10.6485V19.0646C4.75 19.4788 5.08579 19.8146 5.5 19.8146H18.5C18.9142 19.8146 19.25 19.4788 19.25 19.0646V10.6485H4.75ZM18.7176 9.14853L16.7764 5.69772C16.6436 5.46157 16.3937 5.31543 16.1228 5.31543H12.75V9.14853H18.7176Z"/>
   </svg>
   );
-
 
 
   function ColorByCombobox({ geneOptions, value, onChange }) {
@@ -229,6 +230,8 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
     const isDiscrete = filterBy && metadataOptions.discrete_categories.hasOwnProperty(filterBy);
     const isNumeric = filterBy && metadataOptions.numeric_categories.hasOwnProperty(filterBy);
   
+    
+
     const handleReset = () => {
       if (!filterBy || !metadataOptions) return;
   
@@ -326,6 +329,13 @@ const AxiosGetRequest = () => {
 
   const [plotReDraw, setPlotReDraw] = useState(false);
 
+  // Heatmap
+  const [deInitialized, setDeInitialized] = useState(false);
+  const [filteredMarkers, setFilteredMarkers] = useState([]);
+  const [filteredZ, setFilteredZ] = useState([]);
+  const [filteredCustom, setFilteredCustom] = useState([]);
+  const [filteredX, setFilteredX] = useState([]);
+  
 
   const [plotReady, setPlotReady] = useState(false);
   const [plotReadyData, setPlotReadyData] = useState<any[]>([]);
@@ -353,6 +363,7 @@ const AxiosGetRequest = () => {
     group_values: {}
   });
 
+  
 
   const [selectedSample, setSelectedSample] = useState(null);
 
@@ -363,7 +374,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "http://127.0.0.1:8000" //  "https://scinteract-353269782212.us-central1.run.app/" 
+  const static_url = "https://scinteract-353269782212.us-central1.run.app/" 
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -398,6 +409,10 @@ const AxiosGetRequest = () => {
  
   const [error, setError] = useState<string | null>(null); // const [error, setError] = useState(null);
   const [heatmapData, setHeatmapData] = useState<any>(null);
+  const [boxplotData, setBoxPlotData] = useState<any>([]);
+  const [umapSelectedIds, setUmapSelectedIds] = useState<string[]>([]);
+  const [subsetBoxplotData, setSubsetBoxplotData] = useState([]);
+
   const [volcanoData, setVolcanoData] = useState<any>(null);
 
   const [adjustedData, setAdjustedData] = useState([]);
@@ -410,6 +425,7 @@ const AxiosGetRequest = () => {
   const latestTokenRef = useRef<string | null>(null);
 
   const fetchDifferentialExpression = async (selectedCells: string[]) => {
+
 
     // Cancel the previous request if it's still ongoing
     if (controllerRef.current) {
@@ -431,6 +447,7 @@ const AxiosGetRequest = () => {
         cell_ids: selectedCells,
         groupby: groupby,
         request_id: requestToken,
+        zscore: false,
       },
       {
         signal: controller.signal // Pass the signal to axios
@@ -449,8 +466,16 @@ const AxiosGetRequest = () => {
         return;
       }
 
+      const filteredMarkers = getTopMarkers(heatmap_response.data.full_table, 50, 0.1);
+
       // Handle the response (e.g., show in table or plot)
-      setHeatmapData(heatmap_response.data);
+      setHeatmapData({
+        ...heatmap_response.data,
+        filteredMarkers,
+      });
+
+
+
 
     } catch (err) {
       if (axios.isCancel(err) || err.name === "AbortError") {
@@ -501,8 +526,12 @@ const AxiosGetRequest = () => {
         const result = response; // JSON.parse(response.data);
 
         setMeta(result.data);
-        setGroupby(result.data.groupby_options[0] || '');
-        setColor(result.data.groupby_options[0] || '');
+        const defaultGroup = result.data.groupby_options.includes("leiden")
+        ? "leiden"
+        : result.data.groupby_options[0] || '';
+      
+        setGroupby(defaultGroup);
+        setColor(defaultGroup);
 
         setFilterBy(null); // reset the filter when changing the data
 
@@ -532,15 +561,22 @@ const AxiosGetRequest = () => {
 
     fetchPlot();
 
-    if (calledReset) {
-      fetchDifferentialExpression([]);
-    } else if (plotData?.data) {
-      const allCellIds = plotData.data.flatMap((trace: any) =>
-        trace.customdata?.map((d: any) => d[0]) || []
-      );
-      fetchDifferentialExpression(allCellIds);
-    } else {
-      fetchDifferentialExpression([]);
+    if (!deInitialized) {
+
+      setDeInitialized(true); // mark as initialized
+
+      if (calledReset) {
+        // fetchDifferentialExpression([]);
+      } else if (plotData?.data) {
+        const allCellIds = plotData.data.flatMap((trace: any) =>
+          trace.customdata?.map((d: any) => d[0]) || []
+        );
+        // fetchDifferentialExpression(allCellIds);
+      } else {
+        // fetchDifferentialExpression([]);
+      }
+    
+      
     }
 
     setDotSize(1);
@@ -564,6 +600,7 @@ const AxiosGetRequest = () => {
       return cleanup;
     }
   }, [plotReDraw]);
+
 
 
 
@@ -613,6 +650,7 @@ const AxiosGetRequest = () => {
 
     if (error) return <div className="text-red-600">Error: {error}</div>;
     if (!plotData) return <div>Loading...</div>;
+
 
   };
 
@@ -667,6 +705,54 @@ const AxiosGetRequest = () => {
     }
   }, [plotData]);
 
+
+
+  useEffect(() => {
+    if (!plotData?.data || plotData.data.length === 0) return;
+
+    const extractBoxplotData = () => {
+        if (!plotData || !plotData.data || colorType === "metadata") {
+            setBoxPlotData([]);
+            return;
+        }
+
+        const extracted = plotData.data.flatMap((trace: any) => {
+            return trace.customdata.map((entry: any) => {
+                const [cell_id, group, value] = entry;
+
+                // Parse the group: if it's an integer, format it, otherwise leave it as is
+                const formattedGroup = Number.isInteger(group) 
+                    ? `${groupby} ${group}` // Example format: add a prefix to integer group values
+                    : group.toString(); // Ensure it's a string for all non-integers
+
+                return {
+                    cell_id,
+                    group: formattedGroup, // Use the formatted group
+                    expression: value,
+                };
+            });
+        });
+
+        setBoxPlotData(extracted);
+    };
+
+    extractBoxplotData();
+}, [color, plotData, colorType]); // Added colorType to dependencies
+
+
+
+  useEffect(() => {
+    if (umapSelectedIds.length === 0) {
+      setSubsetBoxplotData(boxplotData);
+    } else {
+      const filtered = boxplotData.filter((d: any) =>
+        umapSelectedIds.includes(d.cell_id)
+      );
+      setSubsetBoxplotData(filtered);
+    }
+  }, [umapSelectedIds, boxplotData]);
+  
+
   if (loading){
 
     return(
@@ -679,6 +765,15 @@ const AxiosGetRequest = () => {
   }
 
 
+
+
+
+  const totalCells = plotData?.data?.reduce(
+    (acc: number, trace: any) => acc + (trace?.x?.length || 0),
+    0
+  );
+  
+  // const umapTitle = `Showing UMAP of ${totalCells} cells grouped by ${groupby} and colored by ${color}`;
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -826,6 +921,18 @@ const AxiosGetRequest = () => {
         data={plotReadyData}
         layout={{
           ...plotData?.layout,
+          title: {
+            text: `UMAP of ${plotData?.data?.reduce(
+              (acc: number, trace: any) => acc + (trace?.customdata?.length || 0),
+              0
+            )} cells grouped by ${groupby} and colored by ${color}`,
+            font: {
+              size: 20,
+              color: resolvedTheme === "dark" ? '#fff' : '#000',
+            },
+            xref: 'paper',
+            x: 0.05, // position on the x-axis (0 = left, 0.5 = center)
+          },
           dragmode: 'select',
           paper_bgcolor: resolvedTheme === "dark" ? '#111' : '#fff',
           plot_bgcolor: resolvedTheme === "dark" ? '#111' : '#fff',
@@ -855,6 +962,7 @@ const AxiosGetRequest = () => {
             if (event?.points?.length) {
               const selectedCellIds = event.points.map((pt: any) => pt.customdata?.[0]);
               fetchDifferentialExpression(selectedCellIds);
+              setUmapSelectedIds(selectedCellIds);
             }
         }}
         onDeselect={() => {
@@ -863,7 +971,7 @@ const AxiosGetRequest = () => {
             trace.customdata?.map((d: any) => d[0]) || []
           );
           fetchDifferentialExpression(allCellIds);
-
+          setUmapSelectedIds(allCellIds);
 
         }}
 
@@ -875,33 +983,252 @@ const AxiosGetRequest = () => {
     </div>
 
 
+
+    <div className="mt-10">
+  <h2 className="font-bold text-lg mb-4">Gene Expression by {groupby}</h2>
+  
+  {loadingUMAP || !boxplotData ? (
+    <LoadingIndicator message="Preparing boxplot..." />
+  ) : boxplotData.length > 0 ? (
+
+    <div>
+          <div className="mb-4">
+          <Plot
+              data={[
+                {
+                  type: "box",
+                  x: subsetBoxplotData
+                    .sort((a: any, b: any) => {
+                      // If group is numeric, sort by numeric value
+                      return a.group - b.group;
+                    })
+                    .map((d: any) => d.group),
+                  y: subsetBoxplotData
+                    .sort((a: any, b: any) => {
+                      // Ensure y values are in the same order as x
+                      return a.group - b.group;
+                    })
+                    .map((d: any) => d.expression),
+                  boxpoints: "all",  // Show all points as dots (instead of boxpoints: "all" for boxplot)
+                  jitter: 0.3,
+                  pointpos: 0,  
+                  fillcolor: resolvedTheme === "dark" ? "#ad85d8" : "#6721b4",
+                  line: { color: resolvedTheme === "dark" ? "white" : "black" },
+                  marker: { 
+                    color: resolvedTheme === "dark" ? "white" : "black",
+                    size: 3  // Adjust this number to control the dot size
+                  },
+                },
+              ]}
+              layout={{
+                title: `Expression of ${color} grouped by ${groupby}`,
+                yaxis: { title: color },
+                xaxis: { title: groupby, type: "category" },
+                paper_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
+                plot_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
+                font: { color: resolvedTheme === "dark" ? "#fff" : "#000" },
+                margin: { l: 60, r: 40, t: 60, b: 60 },
+              }}
+              config={{ responsive: true }}
+              style={{ width: "100%", height: "600px" }}
+            />
+        </div>
+        <Button
+        onClick={() => {
+          if (!boxplotData || boxplotData.length === 0) return;
+
+          const renamedData = boxplotData.map(({ cell_id, group, expression }) => ({
+            cell_id,
+            group,
+            [color]: expression, // dynamically name the column after the gene
+          }));
+
+          const csv = Papa.unparse(renamedData);
+          const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.setAttribute("download", `boxplot_${color}.csv`);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }}
+      >
+        Download Boxplot Data
+      </Button>
+</div>
+
+
+  ) : (
+    <p className="text-gray-500">Select a gene to visualize its expression across groups in a boxplot.</p>
+  )}
+</div>
+
+
     <div className="mt-10">
       <h2 className="font-bold text-lg mb-4">Expression Heatmap</h2>
-      {loadingHeatmap ? (
+      {loadingHeatmap || !heatmapData?.data ? (
 
         <LoadingIndicator message = "Preparing top group markers ..." />
 
       ) : (
-      <Plot
-        data={heatmapData.data}
-        layout={{
-          ...heatmapData.layout,
-          paper_bgcolor: resolvedTheme === "dark" ? '#111' : '#fff',
-          plot_bgcolor: resolvedTheme === "dark" ? '#111' : '#fff',
-          font: { color: resolvedTheme === "dark" ? '#fff' : '#000' },
-          margin: {
-            l: 180,  // Make room on the left for the legend
-            r: 40,
-            t: 60,
-            b: 60,
-          },
-        }}
-        config={{ responsive: true }}
-        style={{ width: '100%', height: '600px' }}
-      />
+      <div>
+        <div className = "mb-4">
+            <Plot
+                data={
+                  heatmapData?.filteredMarkers
+                    ? [
+                        {
+                          ...heatmapData.data[0],
+                          x: heatmapData.data[0].x.filter((gene) =>
+                            heatmapData.filteredMarkers.includes(gene)
+                          ),
+                          z: heatmapData.data[0].z.map((row) =>
+                            heatmapData.data[0].x
+                              .map((gene, i) =>
+                                heatmapData.filteredMarkers.includes(gene) ? row[i] : null
+                              )
+                              .filter((val) => val !== null)
+                          ),
+                          customdata: heatmapData.data[0].customdata.map((row) =>
+                            heatmapData.data[0].x
+                              .map((gene, i) =>
+                                heatmapData.filteredMarkers.includes(gene) ? row[i] : null
+                              )
+                              .filter((val) => val !== null)
+                          ),
+                        },
+                      ]
+                    : heatmapData.data
+                }
+                layout={{
+                  ...heatmapData.layout,
+                  paper_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
+                  plot_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
+                  font: { color: resolvedTheme === "dark" ? "#fff" : "#000" },
+                  margin: {
+                    l: 180,
+                    r: 40,
+                    t: 60,
+                    b: 60,
+                  },
+                }}
+                config={{ responsive: true }}
+                style={{ width: "100%", height: "600px" }}
+              />
+        </div>
+
+        <Button
+          onClick={() => {
+        const csv = Papa.unparse(heatmapData.full_table);
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", "de_results.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+          }}
+        >
+          Download Heatmap Data
+        </Button>
+      </div>
     )}
     </div>
 
+
+    <div className="mt-10">
+  <h2 className="font-bold text-lg mb-4">Group-Level Correlation Matrix</h2>
+  {loadingHeatmap || !heatmapData?.correlation_matrix ? (
+    <LoadingIndicator message="Preparing correlation matrix ..." />
+  ) : (
+    <div>
+      <div className="mb-4">
+  <Plot
+    data={[
+      {
+        z: heatmapData?.correlation_matrix?.values,  // Access the correlation values
+        x: heatmapData?.correlation_matrix?.labels,  // X-axis as the correlation matrix labels (groups)
+        y: heatmapData?.correlation_matrix?.labels,  // Y-axis as the correlation matrix labels (groups)
+        type: "heatmap",
+        colorscale:  [
+          [0, "rgb(0, 0, 255)"],    // blue at lowest (-1)
+          [0.5, "rgb(255, 255, 255)"],  // white at 0
+          [1, "rgb(255, 0, 0)"]     // red at highest (+1)
+        ],
+        zmin: -1,         // Set minimum value for correlation (to align with blue)
+        zmax: 1,          // Set maximum value for correlation (to align with red)
+        colorbar: {
+          title: 'Correlation',
+          tickvals: [-1, 0, 1],
+          ticktext: ['-1', '0', '1'],
+        },
+        hovertemplate: "Group: %{y}<br>Group: %{x}<br>Correlation: %{z:.2f}<extra></extra>",  // Adjust hover info
+      },
+    ]}
+    layout={{
+      title: `Group-Level Correlation Matrix (Grouped by ${groupby})`,
+      xaxis: {
+        title: "",
+        tickangle: -45,
+        automargin: true,
+        type: "category", // Treat the x-axis as categorical (discrete)
+      },
+      yaxis: {
+        title: "",
+        automargin: true,
+        autorange: "reversed",  // To ensure the matrix is displayed with the first group at the top
+        type: "category", // Treat the y-axis as categorical (discrete)
+      },
+      paper_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
+      plot_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
+      font: { color: resolvedTheme === "dark" ? "#fff" : "#000" },
+      margin: {
+        l: 180,
+        r: 40,
+        t: 60,
+        b: 60,
+      },
+      height: 600,
+    }}
+    config={{ responsive: true }}
+    style={{ width: "100%", height: "600px" }}
+  />
+</div>
+            <Button
+        className="mt-4"
+        onClick={() => {
+          const correlation = heatmapData?.correlation_matrix;
+          if (!correlation?.values || !correlation?.labels) return;
+
+          const { values, labels } = correlation;
+
+          // Flatten for CSV
+          const flatData = [];
+          for (let i = 0; i < labels.length; i++) {
+            for (let j = 0; j < labels.length; j++) {
+              flatData.push({
+                group1: labels[i],
+                group2: labels[j],
+                correlation: values[i][j],
+              });
+            }
+          }
+
+          const csv = Papa.unparse(flatData);
+          const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.setAttribute("download", "correlation_matrix.csv");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }}
+      >
+        Download Correlation Matrix
+      </Button>
+  </div>
+  )}
+</div>
 
 
     </div>
