@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, CircularProgress, Box, Chip } from '@mui/material';
+import { useTheme } from 'next-themes'
 
 
 
@@ -12,6 +13,7 @@ type NLQueryInputProps = {
   parseApiUrl: string; // e.g., "http://localhost:8000/parse"
   metadataOptions: string[]; // List of metadata options
   geneList: string[]; // List of gene names
+  themeColor: string;
 };
 
 const NLQueryInput: React.FC<NLQueryInputProps> = ({
@@ -21,8 +23,12 @@ const NLQueryInput: React.FC<NLQueryInputProps> = ({
   setColorType,
   parseApiUrl,
   metadataOptions,
-  geneList
+  geneList,
+  themeColor
 }) => {
+
+  const { resolvedTheme } = useTheme()
+
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -63,24 +69,30 @@ const NLQueryInput: React.FC<NLQueryInputProps> = ({
     }
   };
 
+  const boxClassNames = resolvedTheme === 'dark'
+  ? 'relative p-4 border rounded-md bg-gray-900 text-white border-gray-700 shadow-lg'
+  : 'relative p-4 border rounded-md bg-white text-gray-900 border-gray-200 shadow-lg'
+
+
   return (
-    <Box className="relative p-4 border rounded-md bg-white shadow-lg">
+    <Box className={boxClassNames}>
       {/* Container for chip and label */}
       <Box display="flex" alignItems="center" mb={1}>
         {/* Add the super small "alpha" tag to the left of the label */}
         <Chip
           label="AI"
-          color="secondary"
           size="small"  // Small size for the chip
-          style={{
-            marginRight: 10,  // Adds space between the chip and label
-            fontSize: '14px',  // Adjust the font size
-            height: '16px',  // Adjust the height to make it more compact
-            width: '36px',  // Adjust the height to make it more compact
-            padding: '1px 2px',  // Reduce padding for a smaller chip
+          sx={{
+            marginRight: 1.5,
+            fontSize: '14px',
+            height: '16px',
+            width: '36px',
+            padding: '1px 2px',
+            backgroundColor: themeColor,
+            color: '#fff',
           }}
         />
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium dark:text-white text-gray-700">
           Describe how you want to visualize the data:
         </label>
       </Box>
@@ -90,20 +102,47 @@ const NLQueryInput: React.FC<NLQueryInputProps> = ({
       multiline
       rows={3}
       variant="outlined"
-      color="secondary"
       fullWidth
-      className="mb-4"
+      className="mb-4 bg-white"
       placeholder='e.g. "Color by AXIN2 and group by clinical behavior"'
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            borderColor: themeColor,
+          },
+          '&:hover fieldset': {
+            borderColor: themeColor,
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: themeColor,
+          },
+        },
+      }}
     />
     
     <Box display="flex" justifyContent="flex-end" mt={2}>
-      <Button
+    <Button
         onClick={handleSubmit}
         disabled={loading}
         variant="contained"
-        color="secondary"
         startIcon={loading && <CircularProgress size={20} color="inherit" />}
-      >
+        sx={{
+            backgroundColor: loading 
+            ? (resolvedTheme === 'dark' ? '#d1d5db' : themeColor)  // Light gray for loading in dark mode
+            : themeColor, // Normal color when not loading
+            '&:hover': {
+            backgroundColor: loading
+                ? (resolvedTheme === 'dark' ? '#d1d5db' : themeColor) // Hover state for loading button
+                : themeColor, 
+            opacity: 0.85,
+            },
+            '&:disabled': {
+            backgroundColor: loading
+                ? (resolvedTheme === 'dark' ? '#d1d5db' : '#e5e7eb')  // Lighter gray when disabled in dark mode
+                : '#e5e7eb',
+            },
+        }}
+        >
         {loading ? 'Working on it..' : 'Go'}
       </Button>
     </Box>

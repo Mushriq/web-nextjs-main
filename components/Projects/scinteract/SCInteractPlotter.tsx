@@ -296,6 +296,11 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
 
 
     };
+
+    const { resolvedTheme } = useTheme()
+    const themeColor = resolvedTheme === 'dark' ? '#ad85d8' : '#6721b4' 
+
+    
     
     return (
       <Box > {/* sx={{ p: 2 }} */}
@@ -318,7 +323,6 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
                 key={value}
                 control={
                   <Switch
-                    color = "secondary"
                     checked={checked}
                     onChange={() =>
                       setDiscreteValues((prev) => ({
@@ -326,6 +330,14 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
                         [value]: !prev[value],
                       }))
                     }
+                    sx={{
+                      '& .MuiSwitch-switchBase.Mui-checked': {
+                        color: themeColor,
+                      },
+                      '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                        backgroundColor: themeColor,
+                      },
+                    }}
                   />
                 }
                 label={value}
@@ -338,12 +350,23 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
           <Box mt={2}>
             <Typography variant="subtitle1">Select Range</Typography>
             <Slider
-              color = "secondary"
               value={numericRange}
               onChange={(e, newVal) => setNumericRange(newVal as number[])}
               valueLabelDisplay="auto"
               min={metadataOptions.numeric_categories[filterBy].min}
               max={metadataOptions.numeric_categories[filterBy].max}
+              sx={{
+                color: themeColor,
+                '& .MuiSlider-thumb': {
+                  backgroundColor: themeColor,
+                },
+                '& .MuiSlider-track': {
+                  backgroundColor: themeColor,
+                },
+                '& .MuiSlider-rail': {
+                  opacity: 0.3,
+                },
+              }}
             />
           </Box>
         )}
@@ -352,9 +375,13 @@ const boxIcon = (<svg width="24" height="25" viewBox="0 0 24 25" fill="currentCo
     );
   };
   
+
+
 const AxiosGetRequest = () => {
 
   const { theme, resolvedTheme } = useTheme();
+  const themeColor = resolvedTheme === 'dark' ? '#ad85d8' : '#6721b4' 
+
 
   // Group By
   const [groupby, setGroupby] = useState('');
@@ -413,7 +440,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "https://scinteract-353269782212.us-central1.run.app"  // "http://localhost:8000" // 
+  const static_url = "http://localhost:8000" // "https://scinteract-353269782212.us-central1.run.app"  // "http://localhost:8000" // 
 
   // For Printing
   const componentRef = React.useRef(null);
@@ -854,7 +881,7 @@ const AxiosGetRequest = () => {
 
 
 
-  <div className="row-span-3">Control Panel
+  <div className="row-span-3">
 
       <div className="mt-4 w-[500px]"> 
         <label className="block font-medium mb-1">Filter By:</label>
@@ -933,8 +960,18 @@ const AxiosGetRequest = () => {
                 }
               }}
             >
-              <FormControlLabel value="metadata" control={<Radio color="secondary" />} label="Metadata" />
-              <FormControlLabel value="gene" control={<Radio color="secondary" />} label="Gene" />
+              <FormControlLabel value="metadata" control={<Radio sx={{
+              color: themeColor,
+              '&.Mui-checked': {
+                color: themeColor,
+              },
+            }} />} label="Metadata" />
+              <FormControlLabel value="gene" control={<Radio sx={{
+              color: themeColor,
+              '&.Mui-checked': {
+                color: themeColor,
+              },
+            }} />} label="Gene" />
             </RadioGroup>
           </FormControl>
 
@@ -957,13 +994,24 @@ const AxiosGetRequest = () => {
         <Slider
           aria-label = "Dot Size"
           defaultValue={6}
-          color={"secondary"}
           min={1}
           max={10}
           valueLabelDisplay="auto"
           value={dotSize}
           onChange={(e, val) => setDotSize(val)}
           className="w-full"
+          sx={{
+            color: themeColor,
+            '& .MuiSlider-thumb': {
+              backgroundColor: themeColor,
+            },
+            '& .MuiSlider-track': {
+              backgroundColor: themeColor,
+            },
+            '& .MuiSlider-rail': {
+              opacity: 0.3,
+            },
+          }}
         />
         </div>
 
@@ -994,6 +1042,7 @@ const AxiosGetRequest = () => {
         parseApiUrl={`${static_url}/parse`}
         metadataOptions={meta.groupby_options}
         geneList={meta.gene_options}
+        themeColor={themeColor}
       />
   </div>
 

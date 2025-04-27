@@ -80,3 +80,59 @@
  @-webkit-keyframes fade-in-bottom{0%{-webkit-transform:translateY(50px);transform:translateY(50px);opacity:0}100%{-webkit-transform:translateY(0);transform:translateY(0);opacity:1}}@keyframes fade-in-bottom{0%{-webkit-transform:translateY(50px);transform:translateY(50px);opacity:0}100%{-webkit-transform:translateY(0);transform:translateY(0);opacity:1}}
  @-webkit-keyframes puff-in-center{0%{-webkit-transform:scale(2);transform:scale(2);-webkit-filter:blur(4px);filter:blur(4px);opacity:0}100%{-webkit-transform:scale(1);transform:scale(1);-webkit-filter:blur(0);filter:blur(0);opacity:1}}@keyframes puff-in-center{0%{-webkit-transform:scale(2);transform:scale(2);-webkit-filter:blur(4px);filter:blur(4px);opacity:0}100%{-webkit-transform:scale(1);transform:scale(1);-webkit-filter:blur(0);filter:blur(0);opacity:1}}
  @-webkit-keyframes scale-in-center{0%{-webkit-transform:scale(0);transform:scale(0);opacity:0}100%{-webkit-transform:scale(1);transform:scale(1);opacity:1}}@keyframes scale-in-center{0%{-webkit-transform:scale(0);transform:scale(0);opacity:0}100%{-webkit-transform:scale(1);transform:scale(1);opacity:1}}
+
+ @layer components {
+  .conic-glow-wrapper {
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+    border-radius: 9999px;
+  }
+
+  .conic-glow-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    border-radius: 9999px;
+    padding: 12px;
+    background: conic-gradient(
+      from 0deg,
+      #6721b4,
+      #ffb347,
+      #add8e6,
+      #6721b4
+    );
+    filter: blur(30px);
+    animation: rotate-conic 10s linear infinite;
+  }
+
+  .conic-photo-container {
+    position: relative;
+    z-index: 10;
+    overflow: hidden;
+    border-radius: 9999px;
+  }
+
+  @keyframes rotate-conic {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+@layer utilities {
+  .animate-spin-slow {
+    animation: spin 16s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes spin-pingpong {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

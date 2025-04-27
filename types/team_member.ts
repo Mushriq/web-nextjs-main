@@ -6,4 +6,5 @@ export type TeamMember = {
   github?: string;
   linkedin?: string;
   paragraph?: string;
+  cookie?: string;
 };
