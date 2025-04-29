@@ -88,7 +88,8 @@ export default function DirectReportPage({ selectedBarcodeId }) {
         const response = await axios.get(`${static_url}/list`);
         const result = JSON.parse(response.data);
         setBarcodeData(result);
-        setSelectedSample(barcodeData[0]);
+        const selected = barcodeData.find(barcode => barcode.imaging_barcode === selectedBarcodeId);
+        setSelectedSample(selected || barcodeData[0]) 
       } catch (error) {
         setError(error);
       } finally {
