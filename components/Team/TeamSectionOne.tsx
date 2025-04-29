@@ -73,7 +73,7 @@ const TeamSectionOne = () => {
     >
       <div className="relative flex items-center justify-center">
         <div
-          className="absolute h-40 w-40 md:h-48 md:w-48 lg:h-64 lg:w-64 rounded-full blur-xl z-0 animate-spin-slow"
+          className="absolute h-40 w-40 md:h-48 md:w-48 lg:h-64 lg:w-64 rounded-full blur-xl z-0" //  animate-spin-slow
           style={{
             background: `conic-gradient(
               from 0deg,
