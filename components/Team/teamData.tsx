@@ -29,7 +29,7 @@ const teamData: TeamMember[] = [
     role: "Research Associate",
     photo: "/images/team/ar.JPG",
     github: "",
-    cookie: "https://www.google.com/search?q=cookies",
+    cookie: "images/team/chocolate_chip_cookie_recipe.png",
     linkedin: "https://www.linkedin.com/in/ashley-ruehr/",
     paragraph: "Ashley received her B.S. from Northeastern University, majoring in Biology and Mathematics with a minor in Computer Science. She worked at MEEI and MGH in the Edge and Kingston Labs, studying inner ear hair cell regeneration in mice. As a medical assistant in Orthopedic Oncology at MGH and a volunteer with the American Cancer Society, she gained a strong appreciation for cancer research. At HTS, she is interested in applying machine learning for personalized medicine research and exploring various research topics before embarking on a PhD. Outside of lab, Ashley loves running, rock climbing, knitting, and baking.",
   },

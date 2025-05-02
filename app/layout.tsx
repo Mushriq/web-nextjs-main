@@ -6,6 +6,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { Inter } from "next/font/google";
 import { Outfit } from "next/font/google";
 // import Script from "next/script";
+import PreloadTeamImages from "@/components/Team/PreloadTeamImages";
 
 import "node_modules/react-modal-video/css/modal-video.css";
 import "../styles/index.css";
@@ -28,6 +29,7 @@ export default function RootLayout({
 
       <body className={`bg-[#FCFCFC] dark:bg-black ${outfit.className} antialiased`}>
         <Providers>
+          <PreloadTeamImages />
           <Header />
           {children}
           <Footer />
