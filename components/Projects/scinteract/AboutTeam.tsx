@@ -14,6 +14,8 @@ const AboutSCInteractTeam = () => {
             <p>Candace Haddox, MD (DFCI)</p>
             <p>David Shulman, MD (DFCI)</p>
             <p>Aaron Thorner, PhD (DFCI)</p>
+            <br /> 
+            <p>Supported by a research grant from The Desmoid Tumor Research Foundation</p>
           </div>
           <div
                 className="flex flex-wrap gap-6 figure-animation-appear mx-auto lg:mr-0"
