@@ -440,7 +440,7 @@ const AxiosGetRequest = () => {
   const TABLE_HEAD = ["Status", "Timepoint", "Compound", "Mechanism", "LogFC Labelled", "LogFC Unlabelled"];
   const [TABLE_ROWS, setTABLE_ROWS] = useState([]);
 
-  const static_url = "http://localhost:8000" // "https://scinteract-353269782212.us-central1.run.app"  // "http://localhost:8000" // 
+  const static_url = "https://scinteract-353269782212.us-central1.run.app"  // "http://localhost:8000" // 
 
   // For Printing
   const componentRef = React.useRef(null);
