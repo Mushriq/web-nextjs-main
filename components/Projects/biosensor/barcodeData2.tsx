@@ -1125,7 +1125,7 @@ const AxiosGetRequest = () => {
                 
               <div className="flex flex-col items-center mb-12 max-w-[360px] lg:mb-16">
                 <div className="text-lg font-semibold text-gray-800 mt-2"><img
-                                            src="/images/logo/logo-3.png"
+                                            src="/images/logo/hts-logo-light.png"
                                             alt="HTS"
                                             width={358}
                                             height={110}

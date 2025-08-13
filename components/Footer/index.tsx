@@ -28,14 +28,14 @@ const Footer = () => {
               <div className="flex flex-wrap items-center mb-12 max-w-[360px] lg:mb-16">
                 <Link href="/" className="mb-8 inline-block">
                   <Image
-                    src="/images/logo/logo-3.png"
+                    src="/images/logo/hts-logo-light.png"
                     alt="logo"
                     className="w-full max-w-[320px] dark:hidden"
                     width={1000}
                     height={300}
                   />
                   <Image
-                    src="/images/logo/logo-3-dark.png"
+                    src="/images/logo/hts-logo-dark.png"
                     alt="logo"
                     className="hidden w-full max-w-[320px] dark:block"
                     width={1000}
