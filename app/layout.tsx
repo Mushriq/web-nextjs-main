@@ -8,7 +8,7 @@ import { Outfit } from "next/font/google";
 // import Script from "next/script";
 import PreloadTeamImages from "@/components/Team/PreloadTeamImages";
 
-import "node_modules/react-modal-video/css/modal-video.css";
+import "react-modal-video/css/modal-video.css";
 import "../styles/index.css";
 
 const inter = Inter({ subsets: ["latin"] });

@@ -2,7 +2,7 @@
 import React , { useEffect, useState, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import SectionTitle from '../../Common/SectionTitle';
-import ReportSummaryCard from 'components/Projects/biosensor/reportSummaryCard'
+import ReportSummaryCard from '@/components/Projects/biosensor/reportSummaryCard'
 
 import axios from 'axios';
 import { Select, Option } from "@material-tailwind/react";

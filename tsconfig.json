@@ -7,9 +7,9 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "components/*": ["components/*"],
+      "public/*": ["public/*"]
     },
     "allowJs": true,
     "skipLibCheck": true,

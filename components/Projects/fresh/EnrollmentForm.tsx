@@ -1,4 +1,3 @@
-// components/EnrollmentForm.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -20,7 +19,7 @@ import {
   IconButton,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import formStructure from "public/data/Enrollment_Questions_with_Tabs.json";
+import formStructure from "@/public/data/Enrollment_Questions_with_Tabs.json";
 
 const InfoTip = ({ field, text }: { field: string; text: string }) => (
   <Tooltip
