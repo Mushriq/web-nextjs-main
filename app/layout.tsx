@@ -25,7 +25,22 @@ export default function RootLayout({
         <head /> will contain the components returned by the nearest parent
         head.js. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
       */}
-      <head />
+      <head>
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `
+        (function() {
+          const theme = localStorage.getItem('theme') || 'light';
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        })();
+      `,
+    }}
+  />
+</head>
 
       <body className={`bg-[#FCFCFC] dark:bg-black ${outfit.className} antialiased`}>
         <Providers>
