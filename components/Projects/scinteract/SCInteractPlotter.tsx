@@ -1170,15 +1170,16 @@ const AxiosGetRequest = () => {
                   },
                 },
               ]}
-              layout={{
-                title: `Expression of ${color} grouped by ${groupby}`,
-                yaxis: { title: color },
-                xaxis: { title: groupby, type: "category" },
-                paper_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
-                plot_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
-                font: { color: resolvedTheme === "dark" ? "#fff" : "#000" },
-                margin: { l: 60, r: 40, t: 60, b: 60 },
-              }}
+          layout={{
+            title: { text: `Expression of ${color} grouped by ${groupby}` }, 
+            yaxis: { title: { text: color } },                                
+            xaxis: { title: { text: groupby }, type: "category" },            
+            paper_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
+            plot_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
+            font: { color: resolvedTheme === "dark" ? "#fff" : "#000" },
+            margin: { l: 60, r: 40, t: 60, b: 60 },
+          }}
+
               config={{ responsive: true }}
               style={{ width: "100%", height: "600px" }}
             />
@@ -1308,38 +1309,38 @@ const AxiosGetRequest = () => {
         zmin: -1,         // Set minimum value for correlation (to align with blue)
         zmax: 1,          // Set maximum value for correlation (to align with red)
         colorbar: {
-          title: 'Correlation',
+          title: { text: 'Correlation' } ,
           tickvals: [-1, 0, 1],
           ticktext: ['-1', '0', '1'],
         },
         hovertemplate: "Group: %{y}<br>Group: %{x}<br>Correlation: %{z:.2f}<extra></extra>",  // Adjust hover info
       },
     ]}
-    layout={{
-      title: `Group-Level Correlation Matrix (Grouped by ${groupby})`,
-      xaxis: {
-        title: "",
-        tickangle: -45,
-        automargin: true,
-        type: "category", // Treat the x-axis as categorical (discrete)
-      },
-      yaxis: {
-        title: "",
-        automargin: true,
-        autorange: "reversed",  // To ensure the matrix is displayed with the first group at the top
-        type: "category", // Treat the y-axis as categorical (discrete)
-      },
-      paper_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
-      plot_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
-      font: { color: resolvedTheme === "dark" ? "#fff" : "#000" },
-      margin: {
-        l: 180,
-        r: 40,
-        t: 60,
-        b: 60,
-      },
-      height: 600,
-    }}
+layout={{
+  title: { text: `Group-Level Correlation Matrix (Grouped by ${groupby})` }, 
+  xaxis: {
+    title: { text: "" },       
+    tickangle: -45,
+    automargin: true,
+    type: "category", // Treat the x-axis as categorical (discrete)
+  },
+  yaxis: {
+    title: { text: "" },           
+    automargin: true,
+    autorange: "reversed",  // To ensure the matrix is displayed with the first group at the top
+    type: "category", // Treat the y-axis as categorical (discrete)
+  },
+  paper_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
+  plot_bgcolor: resolvedTheme === "dark" ? "#111" : "#fff",
+  font: { color: resolvedTheme === "dark" ? "#fff" : "#000" },
+  margin: {
+    l: 180,
+    r: 40,
+    t: 60,
+    b: 60,
+  },
+  height: 600,
+}}
     config={{ responsive: true }}
     style={{ width: "100%", height: "600px" }}
   />
