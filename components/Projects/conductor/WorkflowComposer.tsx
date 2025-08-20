@@ -13,13 +13,15 @@ import {
   DialogContent,
   DialogActions,
   Stack,
+  Tooltip,
 } from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 
 import {
   DragDropContext,
@@ -37,6 +39,8 @@ type WorkflowStep = {
   device: string;
   device_label: string;
   duration?: number;
+  // placeholder-only UI state for the dummy attachment
+  analysisFileName?: string;
 };
 
 type AllowedStep = {
@@ -46,6 +50,8 @@ type AllowedStep = {
   operation_label: string;
   method_label: string;
   device_label: string;
+  // new flag from API: 1 allows analysis, 0 hides button
+  allowed_analysis?: number; // 0 | 1
 };
 
 export default function WorkflowComposer() {
@@ -88,14 +94,24 @@ export default function WorkflowComposer() {
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return;
-    setSteps((prev) => reorder(prev, result.source.index, result.destination.index));
+    setSteps((prev) =>
+      reorder(prev, result.source.index, result.destination.index)
+    );
   };
 
   // add new step (empty, triggers tile select)
   const handleAddStep = () => {
     setSteps((prev) => [
       ...prev,
-      { id: crypto.randomUUID(), operation: "", operation_label: "", method: "", method_label: "", device: "", device_label: "" },
+      {
+        id: crypto.randomUUID(),
+        operation: "",
+        operation_label: "",
+        method: "",
+        method_label: "",
+        device: "",
+        device_label: "",
+      },
     ]);
     setSelectingStepIndex(steps.length);
   };
@@ -106,7 +122,10 @@ export default function WorkflowComposer() {
     return acc;
   }, {} as Record<string, AllowedStep[]>);
 
-  const handleSelectOperation = (operation: string, operation_label: string) => {
+  const handleSelectOperation = (
+    operation: string,
+    operation_label: string
+  ) => {
     setSteps((prev) => {
       const updated = [...prev];
       updated[selectingStepIndex!] = {
@@ -120,7 +139,12 @@ export default function WorkflowComposer() {
     });
   };
 
-  const handleSelectMethod = (method: string, device: string, method_label: string, device_label: string) => {
+  const handleSelectMethod = (
+    method: string,
+    device: string,
+    method_label: string,
+    device_label: string
+  ) => {
     setSteps((prev) => {
       const updated = [...prev];
       const step = updated[selectingStepIndex!];
@@ -145,7 +169,11 @@ export default function WorkflowComposer() {
     });
   };
 
-  const handleSetDuration = (duration: number, device: string, method_label: string) => {
+  const handleSetDuration = (
+    duration: number,
+    device: string,
+    method_label: string
+  ) => {
     setSteps((prev) => {
       const updated = [...prev];
       const step = updated[selectingStepIndex!];
@@ -183,14 +211,12 @@ export default function WorkflowComposer() {
   const handleEditSave = () => {
     if (menuStepIndex !== null && selectedStep) {
       setSteps((prev) =>
-        prev.map((step, idx) =>
-          idx === menuStepIndex ? { ...selectedStep } : step
-        )
+        prev.map((step, idx) => (idx === menuStepIndex ? { ...selectedStep } : step))
       );
     }
     setEditDialogOpen(false);
-    setMenuStepIndex(null);   // reset
-    setSelectedStep(null);    // reset
+    setMenuStepIndex(null); // reset
+    setSelectedStep(null); // reset
   };
 
   const handleSubmit = async () => {
@@ -204,6 +230,7 @@ export default function WorkflowComposer() {
           operation: s.operation,
           method: s.method,
           device: s.device,
+          // in the future you can include analysis file metadata here
         })),
       };
 
@@ -228,6 +255,40 @@ export default function WorkflowComposer() {
     }
   };
 
+  // === helper: does this step allow analysis? (allowed_analysis === 1) ===
+  const stepAllowsAnalysis = (step: WorkflowStep) => {
+    // Prefer exact match (op+method+device) else fall back to operation-only
+    const exact = allowedSteps.find(
+      (s) =>
+        s.operation === step.operation &&
+        s.method === step.method &&
+        s.device === step.device
+    );
+    const byOp =
+      exact ||
+      allowedSteps.find((s) => s.operation === step.operation) ||
+      null;
+
+    const flag = byOp?.allowed_analysis;
+    // handle 1/0 or "1"/"0"
+    return flag === 1 || flag === (1 as unknown as any) || String(flag) === "1";
+  };
+
+  const handleFileChange = (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0] || null;
+    setSteps((prev) => {
+      const updated = [...prev];
+      updated[index] = {
+        ...updated[index],
+        analysisFileName: file ? file.name : undefined,
+      };
+      return updated;
+    });
+  };
+
   const formComplete =
     projectId.trim() !== "" &&
     experimentId.trim() !== "" &&
@@ -241,10 +302,71 @@ export default function WorkflowComposer() {
 
       {/* metadata form */}
       <div className="space-y-4 mb-6">
-        <TextField label="Project ID" value={projectId} onChange={(e) => setProjectId(e.target.value)} fullWidth />
-        <TextField label="Experiment ID" value={experimentId} onChange={(e) => setExperimentId(e.target.value)} fullWidth />
-        <TextField label="Created By" value={createdBy} onChange={(e) => setCreatedBy(e.target.value)} fullWidth />
-        <TextField label="Source Plate Name" value={sourcePlateName} onChange={(e) => setSourcePlateName(e.target.value)} fullWidth />
+        <TextField
+          label="Project ID"
+          value={projectId}
+          onChange={(e) => setProjectId(e.target.value)}
+          fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&.Mui-focused fieldset": {
+                borderColor: "#6721b4",
+              },
+            },
+            "& label.Mui-focused": {
+              color: "#6721b4",
+            },
+          }}
+
+        />
+        <TextField
+          label="Experiment ID"
+          value={experimentId}
+          onChange={(e) => setExperimentId(e.target.value)}
+          fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&.Mui-focused fieldset": {
+                borderColor: "#6721b4",
+              },
+            },
+            "& label.Mui-focused": {
+              color: "#6721b4",
+            },
+          }}
+        />
+        <TextField
+          label="Created By"
+          value={createdBy}
+          onChange={(e) => setCreatedBy(e.target.value)}
+          fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&.Mui-focused fieldset": {
+                borderColor: "#6721b4",
+              },
+            },
+            "& label.Mui-focused": {
+              color: "#6721b4",
+            },
+          }}
+        />
+        <TextField
+          label="Source Plate Name"
+          value={sourcePlateName}
+          onChange={(e) => setSourcePlateName(e.target.value)}
+          fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "&.Mui-focused fieldset": {
+                borderColor: "#6721b4",
+              },
+            },
+            "& label.Mui-focused": {
+              color: "#6721b4",
+            },
+          }}
+        />
       </div>
 
       {/* drag + step list */}
@@ -256,7 +378,6 @@ export default function WorkflowComposer() {
           isCombineEnabled={false}
           ignoreContainerClipping={false}
         >
-
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
               {steps.map((step, index) => (
@@ -276,26 +397,26 @@ export default function WorkflowComposer() {
                           <h3 className="font-semibold mb-2">Choose Operation:</h3>
                           <div className="grid grid-cols-2 gap-2">
                             {Object.keys(groupedByOperation).map((opLabel) => (
-                            <Button
-                              key={opLabel}
-                              variant="outlined"
-                              onClick={() =>
-                                handleSelectOperation(
-                                  groupedByOperation[opLabel][0].operation,
-                                  groupedByOperation[opLabel][0].operation_label
-                                )
-                              }
-                              sx={{
-                                borderColor: "#6721b4",
-                                color: "#6721b4",
-                                "&:hover": {
-                                  borderColor: "#8140c4",
-                                  backgroundColor: "rgba(103, 33, 180, 0.08)",
-                                },
-                              }}
-                            >
-                              {opLabel}
-                            </Button>
+                              <Button
+                                key={opLabel}
+                                variant="outlined"
+                                onClick={() =>
+                                  handleSelectOperation(
+                                    groupedByOperation[opLabel][0].operation,
+                                    groupedByOperation[opLabel][0].operation_label
+                                  )
+                                }
+                                sx={{
+                                  borderColor: "#6721b4",
+                                  color: "#6721b4",
+                                  "&:hover": {
+                                    borderColor: "#8140c4",
+                                    backgroundColor: "rgba(103, 33, 180, 0.08)",
+                                  },
+                                }}
+                              >
+                                {opLabel}
+                              </Button>
                             ))}
                           </div>
                         </div>
@@ -309,38 +430,43 @@ export default function WorkflowComposer() {
                             <h3 className="font-semibold mb-2">Choose Method:</h3>
                             <div className="grid grid-cols-2 gap-2">
                               {groupedByOperation[
-                                allowedSteps.find((s) => s.operation_label === step.operation_label)?.operation_label || ""
+                                allowedSteps.find(
+                                  (s) => s.operation_label === step.operation_label
+                                )?.operation_label || ""
                               ]?.map((s) => (
-                            <Button
-                              key={`${s.method}-${s.device}`}
-                              variant="outlined"
-                              onClick={() =>
-                                handleSelectMethod(
-                                  s.method,
-                                  s.device,
-                                  s.method_label,
-                                  s.device_label
-                                )
-                              }
-                              sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                textTransform: "none",
-                                borderColor: "#6721b4",
-                                color: "#6721b4",
-                                "&:hover": {
-                                  borderColor: "#8140c4",
-                                  backgroundColor: "rgba(103, 33, 180, 0.08)",
-                                },
-                              }}
-                            >
-                              <span style={{ fontWeight: 500 }}>{s.method_label}</span>
-                              <span style={{ fontSize: "0.8rem", color: "#6b7280" }}>
-                                {s.device_label}
-                              </span>
-                            </Button>
-
+                                <Button
+                                  key={`${s.method}-${s.device}`}
+                                  variant="outlined"
+                                  onClick={() =>
+                                    handleSelectMethod(
+                                      s.method,
+                                      s.device,
+                                      s.method_label,
+                                      s.device_label
+                                    )
+                                  }
+                                  sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    textTransform: "none",
+                                    borderColor: "#6721b4",
+                                    color: "#6721b4",
+                                    "&:hover": {
+                                      borderColor: "#8140c4",
+                                      backgroundColor: "rgba(103, 33, 180, 0.08)",
+                                    },
+                                  }}
+                                >
+                                  <span style={{ fontWeight: 500 }}>
+                                    {s.method_label}
+                                  </span>
+                                  <span
+                                    style={{ fontSize: "0.8rem", color: "#6b7280" }}
+                                  >
+                                    {s.device_label}
+                                  </span>
+                                </Button>
                               ))}
                             </div>
                           </div>
@@ -368,19 +494,30 @@ export default function WorkflowComposer() {
                                 });
                               }}
                               fullWidth
+                              sx={{
+                                "& .MuiOutlinedInput-root": {
+                                  "&.Mui-focused fieldset": {
+                                    borderColor: "#6721b4",
+                                  },
+                                },
+                              }}
                             />
                             <Button
                               variant="contained"
                               onClick={() => {
                                 if (step.duration !== undefined) {
-                                  handleSetDuration(step.duration, step.device, step.method_label);
+                                  handleSetDuration(
+                                    step.duration,
+                                    step.device,
+                                    step.method_label
+                                  );
                                 }
                               }}
                             >
                               Set
                             </Button>
                           </div>
-                      )}
+                        )}
 
                       {/* final step card */}
                       {step.operation !== "" && (
@@ -398,14 +535,53 @@ export default function WorkflowComposer() {
                             <p className="text-xs text-gray-500">
                               {step.operation} – {step.method} – {step.device}
                             </p>
+                            {/* show chosen analysis filename (dummy) */}
+                            {step.analysisFileName && (
+                              <p className="text-xs text-gray-500 mt-1 italic">
+                                Analysis file: {step.analysisFileName}
+                              </p>
+                            )}
                           </div>
-                          <IconButton
-                            onClick={() => {
-                              setSteps((prev) => prev.filter((_, i) => i !== index));
-                            }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
+
+                          <div className="flex items-center gap-1">
+                            {/* Attachment button appears only if allowed_analysis === 1 */}
+                            {stepAllowsAnalysis(step) && (
+                              <Tooltip
+                                title={
+                                  step.analysisFileName
+                                    ? "Change analysis file"
+                                    : "Attach analysis file"
+                                }
+                              >
+                                <IconButton
+                                  component="label"
+                                  size="small"
+                                  sx={{
+                                    color: "#6721b4",
+                                    borderRadius: "10px",
+                                  }}
+                                >
+                                  <AttachFileIcon />
+                                  <input
+                                    hidden
+                                    type="file"
+                                    onChange={(e) => handleFileChange(index, e)}
+                                    accept=".py,.R,.csv,.tsv,.txt,.xlsx,.zip,.json"
+                                  />
+                                </IconButton>
+                              </Tooltip>
+                            )}
+
+                            <IconButton
+                              onClick={() => {
+                                setSteps((prev) =>
+                                  prev.filter((_, i) => i !== index)
+                                );
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -414,25 +590,24 @@ export default function WorkflowComposer() {
               ))}
               {provided.placeholder}
               <Button
-                  variant="outlined"
-                  onClick={handleAddStep}
-                  sx={{
-                    mt: 2,
-                    borderColor: "#6721b4",
-                    color: "#6721b4",
-                    "&:hover": {
-                      borderColor: "#8140c4",
-                      backgroundColor: "rgba(103, 33, 180, 0.08)", // subtle purple hover
-                    },
-                  }}
-                >
+                variant="outlined"
+                onClick={handleAddStep}
+                sx={{
+                  mt: 2,
+                  borderColor: "#6721b4",
+                  color: "#6721b4",
+                  "&:hover": {
+                    borderColor: "#8140c4",
+                    backgroundColor: "rgba(103, 33, 180, 0.08)", // subtle purple hover
+                  },
+                }}
+              >
                 + Add Step
               </Button>
             </div>
           )}
         </Droppable>
       </DragDropContext>
-
 
       {steps.length > 0 && (
         <div className="text-right mt-8">
@@ -443,13 +618,13 @@ export default function WorkflowComposer() {
             onClick={handleSubmit}
             disabled={!formComplete}
             sx={{
-                  backgroundColor: "#6721b4",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#8140c4",
-                  },
-                }}
-               >
+              backgroundColor: "#6721b4",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#8140c4",
+              },
+            }}
+          >
             Submit Workflow
           </Button>
         </div>
