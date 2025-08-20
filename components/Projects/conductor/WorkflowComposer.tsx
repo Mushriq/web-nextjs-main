@@ -5,6 +5,7 @@ import axios from "axios";
 import {
   TextField,
   Button,
+  CircularProgress,
   IconButton,
   Menu,
   MenuItem,
@@ -287,6 +288,58 @@ export default function WorkflowComposer() {
         // filter out nulls and wait for all uploads
         await Promise.allSettled(uploadPromises.filter(Boolean) as Promise<any>[]);
 
+        // --- Step 3: Notify user via email
+        const workflowList = steps
+          .map(
+            (s, i) => `
+              <tr>
+                <td style="padding:6px 12px;border:1px solid #ddd;">${i + 1}</td>
+                <td style="padding:6px 12px;border:1px solid #ddd;">${s.operation_label}</td>
+                <td style="padding:6px 12px;border:1px solid #ddd;">${s.method_label}</td>
+                <td style="padding:6px 12px;border:1px solid #ddd;">${s.device_label}</td>
+              </tr>
+            `
+          )
+          .join("");
+
+        const emailHtml = `
+          <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+            <h2 style="color:#6721b4;">🎉 Workflow Submitted Successfully!</h2>
+            <p>Hi there 👋,</p>
+            <p>Thank you for submitting your workflow. We’ve received it and it’s now in the queue.</p>
+
+            <p><strong>Request ID:</strong> <code>${requestId}</code></p>
+
+            <h3 style="margin-top:20px;">🧪 Workflow Steps</h3>
+            <table style="border-collapse: collapse; width:100%; margin-top:10px;">
+              <thead>
+                <tr style="background:#f5f5f5;">
+                  <th style="padding:6px 12px;border:1px solid #ddd;">#</th>
+                  <th style="padding:6px 12px;border:1px solid #ddd;">Operation</th>
+                  <th style="padding:6px 12px;border:1px solid #ddd;">Method</th>
+                  <th style="padding:6px 12px;border:1px solid #ddd;">Device</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${workflowList}
+              </tbody>
+            </table>
+
+            <p style="margin-top:20px;">🚀 Sit tight while we process your workflow.</p>
+            <p style="margin-top:20px;">Cheers,<br/>The High Throughput Sciences Team</p>
+          </div>
+        `;
+
+        await axios.post(
+          "https://conductor-sync-api-353269782212.us-central1.run.app/api/notify",
+          {
+            to: createdBy.trim(),
+            subject: "🎉 Workflow Submitted Successfully!",
+            body: emailHtml,  // HTML version
+          }
+        );
+
+
         alert("Workflow and analysis scripts submitted successfully!");
         setSteps([]);
         setProjectId("");
@@ -385,9 +438,17 @@ export default function WorkflowComposer() {
           }}
         />
         <TextField
-          label="Created By"
+          label="Created By (Email)"
+          type="email"
           value={createdBy}
           onChange={(e) => setCreatedBy(e.target.value)}
+          required
+          error={createdBy !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(createdBy)}
+          helperText={
+            createdBy !== "" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(createdBy)
+              ? "Please enter a valid email address"
+              : ""
+          }
           fullWidth
           sx={{
             "& .MuiOutlinedInput-root": {
@@ -400,6 +461,7 @@ export default function WorkflowComposer() {
             },
           }}
         />
+
         <TextField
           label="Source Plate Name"
           value={sourcePlateName}
@@ -669,20 +731,28 @@ export default function WorkflowComposer() {
 
       {steps.length > 0 && (
         <div className="text-right mt-8">
-          <Button
-            variant="contained"
-            startIcon={submitting ? null : <CloudUploadIcon />}
-            size="large"
-            onClick={handleSubmit}
-            disabled={!formComplete || submitting}
-            sx={{
-              backgroundColor: "#6721b4",
-              color: "white",
-              "&:hover": { backgroundColor: "#8140c4" },
-            }}
-          >
-            {submitting ? "Submitting..." : "Submit Workflow"}
-          </Button>
+            <Button
+              variant="contained"
+              startIcon={!submitting ? <CloudUploadIcon /> : null}
+              size="large"
+              onClick={handleSubmit}
+              disabled={!formComplete || submitting}
+              sx={{
+                backgroundColor: "#6721b4",
+                color: "white",
+                "&:hover": { backgroundColor: "#8140c4" },
+                minWidth: "180px", // keep button width stable
+              }}
+            >
+              {submitting ? (
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <CircularProgress size={20} color="inherit" />
+                  Submitting...
+                </div>
+              ) : (
+                "Submit Workflow"
+              )}
+            </Button>
         </div>
       )}
     </div>

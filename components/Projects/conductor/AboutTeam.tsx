@@ -8,7 +8,7 @@ const AboutConductorTeam = () => {
         <div className="border-b border-body-color/[.15] pb-4 dark:border-white/[.15]">
         <div className="flex flex-wrap items-center">
           <div className="py-4">
-            <h3 className="text-xl font-bold text-black dark:text-white">Principal Investigators</h3>
+            <h3 className="text-xl font-bold text-black dark:text-white">Team</h3>
             <p>Mushriq Al-Jazrawe, PhD (MIT)</p>
             <br /> 
           </div>
