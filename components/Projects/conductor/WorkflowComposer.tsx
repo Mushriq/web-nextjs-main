@@ -41,6 +41,8 @@ type WorkflowStep = {
   duration?: number;
   // placeholder-only UI state for the dummy attachment
   analysisFileName?: string;
+  analysisFile?: File;   // keep the real file object
+  uploadStatus?: "pending" | "uploading" | "done" | "error";  // new
 };
 
 type AllowedStep = {
@@ -71,6 +73,8 @@ export default function WorkflowComposer() {
   const [menuStepIndex, setMenuStepIndex] = useState<number | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedStep, setSelectedStep] = useState<WorkflowStep | null>(null);
+
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     axios
@@ -220,40 +224,86 @@ export default function WorkflowComposer() {
   };
 
   const handleSubmit = async () => {
-    try {
-      const payload = {
-        project_id: projectId.trim(),
-        experiment_id: experimentId.trim(),
-        created_by: createdBy.trim(),
-        source_plate_name: sourcePlateName.trim(),
-        steps: steps.map((s) => ({
-          operation: s.operation,
-          method: s.method,
-          device: s.device,
-          // in the future you can include analysis file metadata here
-        })),
-      };
+      try {
+        setSubmitting(true);
 
-      await axios.post(
-        "https://conductor-sync-api-353269782212.us-central1.run.app/api/workflows/append-csv",
-        payload,
-        { headers: { "Content-Type": "application/json" } }
-      );
+        // --- Step 1: Send workflow
+        const payload = {
+          project_id: projectId.trim(),
+          experiment_id: experimentId.trim(),
+          created_by: createdBy.trim(),
+          source_plate_name: sourcePlateName.trim(),
+          steps: steps.map((s) => ({
+            operation: s.operation,
+            method: s.method,
+            device: s.device,
+          })),
+        };
 
-      alert("Workflow submitted successfully!");
-      setSteps([]);
-      setProjectId("");
-      setExperimentId("");
-      setCreatedBy("");
-      setSourcePlateName("");
-    } catch (err: any) {
-      if (axios.isAxiosError(err)) {
-        alert(`Error: ${err.response?.data || err.message}`);
-      } else {
-        alert(`Unexpected error: ${err}`);
+        const resp = await axios.post(
+          "https://conductor-sync-api-353269782212.us-central1.run.app/api/workflows/append-csv",
+          payload,
+          { headers: { "Content-Type": "application/json" } }
+        );
+
+        const requestId = resp.data.request_id;
+
+        // --- Step 2: Upload all analysis scripts in parallel
+        const uploadPromises = steps.map((step, i) => {
+          if (!step.analysisFile) return null;
+
+          // mark as uploading
+          setSteps((prev) => {
+            const updated = [...prev];
+            updated[i].uploadStatus = "uploading";
+            return updated;
+          });
+
+          const formData = new FormData();
+          formData.append("file", step.analysisFile);
+
+          return axios
+            .post(
+              `https://conductor-sync-api-353269782212.us-central1.run.app/api/workflows/${requestId}/upload-analysis/${i + 1}`,
+              formData,
+              { headers: { "Content-Type": "multipart/form-data" } }
+            )
+            .then(() => {
+              setSteps((prev) => {
+                const updated = [...prev];
+                updated[i].uploadStatus = "done";
+                return updated;
+              });
+            })
+            .catch(() => {
+              setSteps((prev) => {
+                const updated = [...prev];
+                updated[i].uploadStatus = "error";
+                return updated;
+              });
+            });
+        });
+
+        // filter out nulls and wait for all uploads
+        await Promise.allSettled(uploadPromises.filter(Boolean) as Promise<any>[]);
+
+        alert("Workflow and analysis scripts submitted successfully!");
+        setSteps([]);
+        setProjectId("");
+        setExperimentId("");
+        setCreatedBy("");
+        setSourcePlateName("");
+      } catch (err: any) {
+        if (axios.isAxiosError(err)) {
+          alert(`Error: ${err.response?.data?.detail || err.message}`);
+        } else {
+          alert(`Unexpected error: ${err}`);
+        }
+      } finally {
+        setSubmitting(false);
       }
-    }
   };
+
 
   // === helper: does this step allow analysis? (allowed_analysis === 1) ===
   const stepAllowsAnalysis = (step: WorkflowStep) => {
@@ -274,20 +324,19 @@ export default function WorkflowComposer() {
     return flag === 1 || flag === (1 as unknown as any) || String(flag) === "1";
   };
 
-  const handleFileChange = (
-    index: number,
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleFileChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     setSteps((prev) => {
       const updated = [...prev];
       updated[index] = {
         ...updated[index],
         analysisFileName: file ? file.name : undefined,
+        analysisFile: file || undefined,
       };
       return updated;
     });
   };
+
 
   const formComplete =
     projectId.trim() !== "" &&
@@ -538,7 +587,16 @@ export default function WorkflowComposer() {
                             {/* show chosen analysis filename (dummy) */}
                             {step.analysisFileName && (
                               <p className="text-xs text-gray-500 mt-1 italic">
-                                Analysis file: {step.analysisFileName}
+                                Analysis script: {step.analysisFileName}{" "}
+                                {step.uploadStatus === "uploading" && (
+                                  <span style={{ color: "orange" }}>⏳ Uploading...</span>
+                                )}
+                                {step.uploadStatus === "done" && (
+                                  <span style={{ color: "green" }}>✔ Uploaded</span>
+                                )}
+                                {step.uploadStatus === "error" && (
+                                  <span style={{ color: "red" }}>⚠ Failed</span>
+                                )}
                               </p>
                             )}
                           </div>
@@ -613,19 +671,17 @@ export default function WorkflowComposer() {
         <div className="text-right mt-8">
           <Button
             variant="contained"
-            startIcon={<CloudUploadIcon />}
+            startIcon={submitting ? null : <CloudUploadIcon />}
             size="large"
             onClick={handleSubmit}
-            disabled={!formComplete}
+            disabled={!formComplete || submitting}
             sx={{
               backgroundColor: "#6721b4",
               color: "white",
-              "&:hover": {
-                backgroundColor: "#8140c4",
-              },
+              "&:hover": { backgroundColor: "#8140c4" },
             }}
           >
-            Submit Workflow
+            {submitting ? "Submitting..." : "Submit Workflow"}
           </Button>
         </div>
       )}
