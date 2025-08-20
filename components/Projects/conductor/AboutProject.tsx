@@ -19,8 +19,8 @@ const AboutConductorProject = () => {
           <div className="-mx-4 flex flex-wrap items-center">
             <div className="w-full section-animation px-4 lg:w-1/2">
               <SectionTitle
-              title="Single-cell exploration of gene expression and genotypes"
-              paragraph="Desmoid tumors comprise neoplastic and non-neoplastic cells, but how their cellular composition and interactions influence clinical behavior remains unclear. We are applying integrated single-nucleus and single-cell RNA sequencing with targeted genotyping of CTNNB1 and APC mutations to resolve tumor identity at single-cell resolution. Using biobanked desmoid tumor specimens, we are characterizing transcriptional profiles of genetically defined tumor and non-tumor cells. By linking these molecular profiles to clinical trajectories, we aim to identify gene expression programs associated with spontaneous regression and tumor-specific biology. Understanding these programs may reveal mechanisms that can be leveraged to induce regression in aggressive cases, and help identify patients who could be spared unnecessary or intensive therapy."
+              title="Automate Lab Workflows"
+              paragraph="Design automated experiments in the cloud with Composer UI. Enter project details, add steps, reorder tiles, and attach analysis scripts where supported. Submitted workflows join a shared queue, where automated systems with matching capabilities claim and execute jobs via the Conductor API."
               mb="0px"
               width="800px"
               />
@@ -28,13 +28,14 @@ const AboutConductorProject = () => {
 
             <div className="w-full px-4 lg:w-1/2">
               <div
-                className="relative figure-animation-right mx-auto aspect-[1/1] max-w-[500px] lg:mr-0"
+                className="mx-auto max-w-[500px] aspect-square flex items-center justify-center bg-white rounded-2xl shadow"
               >
                 <Image
-                  src="/images/projects/scinteract/ctnnb1_t41a_umap.png"
-                  alt="biosensor-image"
-                  fill
-                  className="block drop-shadow-xl rounded-2xl dark:opacity-80 mx-auto max-w-full dark:drop-shadow-none lg:mr-0"
+                  src="/images/projects/conductor/composer-ui.png"
+                  alt="composer-ui-image"
+                  width={3000}
+                  height={3000}
+                  className="max-h-[80%] max-w-[80%] object-contain"
                 />
               </div>
             </div>
