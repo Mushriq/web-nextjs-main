@@ -438,7 +438,7 @@ export default function WorkflowComposer() {
           }}
         />
         <TextField
-          label="Created By (Email)"
+          label="Created By (MIT Emails Only)"
           type="email"
           value={createdBy}
           onChange={(e) => setCreatedBy(e.target.value)}
