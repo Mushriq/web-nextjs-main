@@ -7,6 +7,9 @@ import {
   Button,
   CircularProgress,
   IconButton,
+  FormControl,
+  InputLabel,
+  Select,
   Menu,
   MenuItem,
   Dialog,
@@ -68,6 +71,7 @@ export default function WorkflowComposer() {
   const [experimentId, setExperimentId] = useState("");
   const [createdBy, setCreatedBy] = useState("");
   const [sourcePlateName, setSourcePlateName] = useState("");
+  const [sourcePlateFormat, setSourcePlateFormat] = useState("");
 
   // menu + edit dialog state
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
@@ -234,6 +238,7 @@ export default function WorkflowComposer() {
           experiment_id: experimentId.trim(),
           created_by: createdBy.trim(),
           source_plate_name: sourcePlateName.trim(),
+          source_plate_format: sourcePlateFormat.trim(),
           steps: steps.map((s) => ({
             operation: s.operation,
             method: s.method,
@@ -396,6 +401,7 @@ export default function WorkflowComposer() {
     experimentId.trim() !== "" &&
     createdBy.trim() !== "" &&
     sourcePlateName.trim() !== "" &&
+    sourcePlateFormat.trim() !== "" &&
     steps.length > 0;
 
   return (
@@ -478,6 +484,25 @@ export default function WorkflowComposer() {
             },
           }}
         />
+
+      <FormControl fullWidth>
+        <InputLabel id="spf-label" sx={{ "&.Mui-focused": { color: "#6721b4" } }}>
+          Source Plate Format
+        </InputLabel>
+        <Select
+          labelId="spf-label"
+          id="spf"
+          label="Source Plate Format"
+          value={sourcePlateFormat}
+          onChange={(e) => setSourcePlateFormat(String(e.target.value))}
+          sx={{ "& .MuiOutlinedInput-notchedOutline": { borderColor: "#6721b4" }, "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#6721b4" }, "& .MuiSelect-icon": { color: "#6721b4" }, }}
+        >
+          <MenuItem value="96wEMPTY">96-Well Plate - Empty</MenuItem>
+          <MenuItem value="384wEMPTY">384-Well Plate - Empty</MenuItem>
+          <MenuItem value="96wHEK293">96-Well Plate - HEK293 Cells</MenuItem>
+        </Select>
+      </FormControl>
+
       </div>
 
       {/* drag + step list */}
@@ -686,7 +711,7 @@ export default function WorkflowComposer() {
                                     hidden
                                     type="file"
                                     onChange={(e) => handleFileChange(index, e)}
-                                    accept=".py,.R,.csv,.tsv,.txt,.xlsx,.zip,.json"
+                                    accept=".py,.R"
                                   />
                                 </IconButton>
                               </Tooltip>
