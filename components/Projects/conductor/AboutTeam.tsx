@@ -9,7 +9,9 @@ const AboutConductorTeam = () => {
         <div className="flex flex-wrap items-center">
           <div className="py-4">
             <h3 className="text-xl font-bold text-black dark:text-white">Team</h3>
-            <p>Mushriq Al-Jazrawe, PhD (MIT)</p>
+            <p>Mushriq Al-Jazrawe, PhD</p>
+            <p>Nicole Ostrovsky, MS</p>
+            <p>Ashley Ruehr, BS</p>
             <br /> 
           </div>
           <div
