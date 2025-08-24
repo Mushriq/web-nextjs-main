@@ -1,19 +1,14 @@
-"use client"
-import ComposerForm from "./WorkflowComposer";
+"use client";
 
-const  WrapperComponent = () => {
+import WorkflowComposer from "./WorkflowComposer";
+import ResultPortal from "./ResultPortal";
 
-
+const WrapperComponent = () => {
   return (
-
-
-
-    <div className="py-4">
-
-        <ComposerForm  />
-
-    </div> 
- 
+    <div className="py-4 space-y-10">
+      <WorkflowComposer />
+      <ResultPortal />
+    </div>
   );
 };
 
