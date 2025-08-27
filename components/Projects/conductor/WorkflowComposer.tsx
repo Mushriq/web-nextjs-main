@@ -711,7 +711,7 @@ export default function WorkflowComposer() {
                                     hidden
                                     type="file"
                                     onChange={(e) => handleFileChange(index, e)}
-                                    accept=".py,.R"
+                                    accept=".py,.R,.txt,.gwl"
                                   />
                                 </IconButton>
                               </Tooltip>
